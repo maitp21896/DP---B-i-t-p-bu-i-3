@@ -32,7 +32,7 @@ async function finish(page: Page) {
     .fill(
       "Nếu Cost/LPV tăng trên 20% trong ba ngày và ATC Rate giảm, tôi sẽ kiểm tra placement trước khi tăng ngân sách.",
     );
-  await page.getByRole("button", { name: "Xem đánh giá mô phỏng" }).click();
+  await page.getByRole("button", { name: "Xem tóm tắt bài làm" }).click();
 }
 test("popup, case and dataset, three tasks, revision, PDF and reset work end-to-end", async ({
   page,
@@ -67,9 +67,9 @@ test("popup, case and dataset, three tasks, revision, PDF and reset work end-to-
   await broad.fill("8000000");
   await expect(broad).toHaveValue("8000000");
   await page.reload();
-  await expect(
-    page.getByLabel("Giải thích", { exact: true }),
-  ).toHaveValue(rationale);
+  await expect(page.getByLabel("Giải thích", { exact: true })).toHaveValue(
+    rationale,
+  );
   await page.getByRole("button", { name: "Xem lại yêu cầu bài tập" }).click();
   await expect(
     page.getByRole("dialog", { name: "Yêu cầu bài tập" }),
@@ -78,7 +78,7 @@ test("popup, case and dataset, three tasks, revision, PDF and reset work end-to-
   await finish(page);
   await expect(page.locator(".proposal")).toContainText(rationale);
   await expect(page.locator(".proposal")).toContainText("Học Viên Kiểm Thử");
-  await page.getByRole("button", { name: "Điều chỉnh một lần" }).click();
+  await page.getByRole("button", { name: "Chỉnh sửa bài làm" }).click();
   await page
     .getByRole("slider", { name: "Ngân sách Retargeting" })
     .fill("1600000");
@@ -91,11 +91,17 @@ test("popup, case and dataset, three tasks, revision, PDF and reset work end-to-
   await page
     .getByRole("button", { name: "Tiếp theo · Bài 3", exact: true })
     .click();
-  await page.getByRole("button", { name: "Đánh giá bản điều chỉnh" }).click();
-  await expect(page.getByText("Đã dùng lượt điều chỉnh")).toBeVisible();
+  await page.getByRole("button", { name: "Xem tóm tắt bài đã sửa" }).click();
   await expect(
-    page.getByRole("heading", { name: "So sánh đề xuất ban đầu & điều chỉnh" }),
+    page.getByRole("button", { name: "Chỉnh sửa bài làm" }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Tóm tắt bài làm", exact: true }),
   ).toBeVisible();
+  await expect(
+    page.getByText("Điểm tham khảo cho quyết định có cấu trúc"),
+  ).toHaveCount(0);
+  await expect(page.getByText("Chất lượng bằng chứng")).toHaveCount(0);
   if (browserName === "chromium") {
     await page.emulateMedia({ media: "print" });
     const pdf = await page.pdf({
@@ -138,9 +144,9 @@ test("each assignment validates before Next; drafts persist when moving back", a
     .click();
   await expect(page.locator(".error[role=alert]")).toContainText("hành động");
   await page.getByRole("button", { name: "← Quay lại", exact: true }).click();
-  await expect(
-    page.getByLabel("Giải thích", { exact: true }),
-  ).toHaveValue(rationale);
+  await expect(page.getByLabel("Giải thích", { exact: true })).toHaveValue(
+    rationale,
+  );
 });
 test("simulation does not submit; failure retries exact snapshot and confirmation persists", async ({
   page,
@@ -220,7 +226,7 @@ test("trainer page has no login and rejects public access to Excel", async ({
 }) => {
   await page.goto("/trainer");
   await expect(
-    page.getByRole("heading", { name: "Tải bài nộp của lớp" }),
+    page.getByRole("heading", { name: "Bài nộp của học viên" }),
   ).toBeVisible();
   await expect(
     page.getByText("Hãy mở link riêng dành cho trainer", { exact: false }),
@@ -281,23 +287,29 @@ test("legacy v2 draft keeps identity, budgets and rationale in the new task flow
 test("trainer private-link UI downloads a class Excel file without login", async ({
   page,
 }) => {
-  await page.route("**/api/trainer/export", (route) =>
-    route.fulfill({
+  await page.route("**/api/trainer/export", (route) => {
+    expect(route.request().postDataJSON()).toEqual({});
+    return route.fulfill({
       status: 200,
       headers: {
         "Content-Type":
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       },
       body: Buffer.from("test-only-download-response"),
-    }),
-  );
+    });
+  });
   await page.goto("/trainer#key=test-only-private-link-fixture-000000000000");
-  await page.getByLabel("Mã lớp", { exact: true }).fill("DP27");
+  await expect(page.getByLabel("Mã lớp", { exact: true })).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Đáp án gợi ý & hướng dẫn nhận xét" }),
+  ).toBeVisible();
   const download = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Tải Excel tổng hợp", exact: true })
     .click();
-  expect((await download).suggestedFilename()).toBe("Glow-Nature-DP27.xlsx");
+  expect((await download).suggestedFilename()).toBe(
+    "Tomorrow-Marketers-Tat-ca-lop.xlsx",
+  );
   await expect(
     page.getByText("Đã tải file Excel.", { exact: false }),
   ).toBeVisible();
@@ -307,25 +319,76 @@ test("trainer private-link UI downloads a class Excel file without login", async
   });
 });
 
-test("step buttons navigate freely and dragging reallocates a fully allocated budget", async ({ page }) => {
+test("step buttons navigate freely and dragging reallocates a fully allocated budget", async ({
+  page,
+}) => {
   await page.goto("/");
   await begin(page);
   const progress = page.locator(".progress");
   await progress.getByRole("button", { name: "Bài 3 · Theo dõi" }).click();
-  await expect(page.getByLabel("Điều kiện và hành động điều chỉnh")).toBeVisible();
+  await expect(
+    page.getByLabel("Điều kiện và hành động điều chỉnh"),
+  ).toBeVisible();
   await progress.getByRole("button", { name: "Bài 1 · Ngân sách" }).click();
   const slider = page.getByRole("slider", { name: "Ngân sách Broad" });
   const box = (await slider.boundingBox())!;
   await page.mouse.move(box.x + box.width * 0.375, box.y + box.height / 2);
   await page.mouse.down();
-  await page.mouse.move(box.x + box.width * 0.65, box.y + box.height / 2, { steps: 8 });
+  await page.mouse.move(box.x + box.width * 0.65, box.y + box.height / 2, {
+    steps: 8,
+  });
   await page.mouse.up();
   expect(Number(await slider.inputValue())).toBeGreaterThan(3000000);
-  const values = await page.locator('input[type="range"]').evaluateAll((inputs) => inputs.map((input) => Number((input as HTMLInputElement).value)));
+  const values = await page
+    .locator('input[type="range"]')
+    .evaluateAll((inputs) =>
+      inputs.map((input) => Number((input as HTMLInputElement).value)),
+    );
   expect(values.reduce((a, b) => a + b, 0)).toBe(8000000);
   await progress.getByRole("button", { name: "Case & dataset" }).click();
   await progress.getByRole("button", { name: "Bài 1 · Ngân sách" }).click();
   expect(Number(await slider.inputValue())).toBe(values[0]);
   await progress.getByRole("button", { name: "Kết quả & nộp bài" }).click();
   await expect(page.locator(".error[role=alert]")).toBeVisible();
+});
+
+test("20-minute reminder still allows ordinary submission without a late flag", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await begin(page);
+  await page.evaluate(() => {
+    const draft = JSON.parse(localStorage.getItem("glow-nature-session-v3")!);
+    draft.started = Date.now() - 21 * 60 * 1000;
+    draft.timer = true;
+    localStorage.setItem("glow-nature-session-v3", JSON.stringify(draft));
+  });
+  await page.reload();
+  await expect(
+    page.getByText("Đã hết 20 phút.", { exact: false }),
+  ).toBeVisible();
+  await budget(page);
+  await finish(page);
+  await expect(
+    page.getByRole("heading", { name: "Chất lượng traffic" }),
+  ).toHaveCount(0);
+  await page.route("**/api/submissions", async (route) => {
+    const body = route.request().postDataJSON();
+    expect(body).not.toHaveProperty("timing");
+    expect(body).not.toHaveProperty("late");
+    await route.fulfill({
+      status: 201,
+      contentType: "application/json",
+      body: JSON.stringify({
+        id: body.id,
+        submittedAt: new Date().toISOString(),
+        status: "submitted",
+      }),
+    });
+  });
+  await page.getByLabel("Tôi đã kiểm tra đề xuất").check();
+  await page
+    .getByRole("button", { name: "Nộp đề xuất cuối cùng", exact: true })
+    .click();
+  await expect(page.getByText("Đã nộp đề xuất cho giảng viên")).toBeVisible();
 });

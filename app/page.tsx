@@ -17,10 +17,8 @@ import FinalSubmission from "@/components/FinalSubmission";
 import { Assignment, AssignmentDialog } from "@/components/Assignment";
 import { identitySchema } from "@/lib/submissions/schema";
 import { useSession } from "@/store/session";
-import { evaluate, validate } from "@/lib/simulation";
+import { validate } from "@/lib/simulation";
 import { Decision } from "@/types/campaign";
-import { actions } from "@/lib/actions";
-import { ids, money, shortNames } from "@/lib/metrics";
 const steps = [
   "Thông tin học viên",
   "Case & dataset",
@@ -68,7 +66,6 @@ export default function Home() {
     return <main className="loading">Đang tải không gian chiến dịch…</main>;
   const remaining = Math.max(0, 1200 - Math.floor((now - s.started) / 1000));
   const submitted = s.submissions.at(-1);
-  const result = submitted ? evaluate(submitted) : null;
   function submit() {
     const decision: Decision = {
       budgets: { ...s.budgets },
@@ -212,7 +209,7 @@ export default function Home() {
                     "Bài 1 · Phân bổ ngân sách",
                     "Bài 2 · Đề xuất hành động tối ưu",
                     "Bài 3 · Theo dõi và điều chỉnh",
-                    "Đánh giá & nộp đề xuất cuối cùng",
+                    "Tóm tắt & nộp bài",
                   ][s.stage]
                 }
               </h1>
@@ -224,7 +221,7 @@ export default function Home() {
                     "Chia 8 triệu đồng cho 3 Ad Set và giải thích quyết định.",
                     "Chọn tối đa 3 thay đổi cụ thể cùng Ad Set áp dụng.",
                     "Chọn 2–3 KPI và đặt điều kiện điều chỉnh chiến lược.",
-                    "Xem phản hồi, sửa một lần nếu cần và nộp bản cuối.",
+                    "Kiểm tra câu trả lời và nộp bài cho giảng viên.",
                   ][s.stage]
                 }
               </p>
@@ -259,7 +256,7 @@ export default function Home() {
           )}
           {s.timer && remaining === 0 && (
             <p className="notice no-print">
-              Đã hết 20 phút. Bạn vẫn có thể hoàn thành và xuất đề xuất.
+              Đã hết 20 phút. Bạn vẫn có thể hoàn thành và nộp bài bình thường.
             </p>
           )}
           {s.stage === 0 && (
@@ -374,158 +371,27 @@ export default function Home() {
                 ) : (
                   <button onClick={submit}>
                     {s.submissions.length === 1
-                      ? "Đánh giá bản điều chỉnh"
-                      : "Xem đánh giá mô phỏng"}{" "}
+                      ? "Xem tóm tắt bài đã sửa"
+                      : "Xem tóm tắt bài làm"}{" "}
                     <ArrowRight size={17} />
                   </button>
                 )}
               </div>
             </>
           )}
-          {s.stage === 5 && submitted && result && (
+          {s.stage === 5 && submitted && (
             <>
-              <section className="card evaluation no-print">
-                <div className="section-head">
-                  <div>
-                    <span className="eyebrow">
-                      ĐÁNH GIÁ TÁC ĐỘNG QUYẾT ĐỊNH
-                    </span>
-                    <h2>Điểm mạnh, đánh đổi & điều cần kiểm chứng</h2>
-                    <p>
-                      Quy tắc giáo dục xác định · Không dự báo hiệu suất Meta
-                      Ads.
-                    </p>
-                  </div>
-                  {s.submissions.length === 1 &&
+              <section className="card no-print">
+                <h2>Tóm tắt bài làm</h2>
+                <p>Kiểm tra quyết định và câu trả lời của bạn trước khi nộp.</p>
+                {s.submissions.length === 1 &&
                   !s.delivery &&
-                  !s.pendingSubmission ? (
+                  !s.pendingSubmission && (
                     <button className="secondary" onClick={() => go(2)}>
-                      Điều chỉnh một lần
+                      Chỉnh sửa bài làm
                     </button>
-                  ) : (
-                    <span className="badge">
-                      {s.delivery
-                        ? "Đề xuất đã nộp"
-                        : s.pendingSubmission
-                          ? "Đang chờ xác nhận nộp"
-                          : "Đã dùng lượt điều chỉnh"}
-                    </span>
                   )}
-                </div>
-                <div className="assessment-grid">
-                  {result.assessment.map((a) => (
-                    <div className="assessment" key={a.name}>
-                      <h3>{a.name}</h3>
-                      <span
-                        className={
-                          a.status === "Cần chú ý" ? "badge warning" : "badge"
-                        }
-                      >
-                        {a.status}
-                      </span>
-                      <p>{a.reason}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="score">
-                  <div>
-                    <strong>
-                      {result.indicative}
-                      <small>/70</small>
-                    </strong>
-                    <span>Điểm tham khảo cho quyết định có cấu trúc</span>
-                  </div>
-                  <p>
-                    <b>30 điểm phân tích bằng chứng: chờ giảng viên.</b> Điểm
-                    không khẳng định chất lượng lập luận hoặc tính đúng đắn của
-                    văn bản. Mức ngân sách khác nhau có thể đều hợp lý.
-                  </p>
-                </div>
-                <div className="rubric">
-                  {result.structured.map((x) => (
-                    <div key={x.name}>
-                      <span>
-                        {x.name} ({x.weight}%)
-                      </span>
-                      <b>
-                        {x.points}/{x.weight}
-                      </b>
-                    </div>
-                  ))}
-                </div>
-                <p className="caption">
-                  Giảng viên xem tính phù hợp của số liệu, giả thuyết, nguyên
-                  nhân, giải thích đánh đổi và điều kiện điều chỉnh. Không chấm
-                  bằng từ khóa.
-                </p>
               </section>
-              {s.submissions.length === 2 && (
-                <section className="card no-print">
-                  <h2>So sánh đề xuất ban đầu & điều chỉnh</h2>
-                  <div className="table-scroll">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Hạng mục</th>
-                          <th>Ban đầu</th>
-                          <th>Điều chỉnh</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ids.map((id) => (
-                          <tr key={id}>
-                            <th>{shortNames[id]}</th>
-                            {s.submissions.map((d, i) => (
-                              <td key={i}>{money(d.budgets[id])}</td>
-                            ))}
-                          </tr>
-                        ))}
-                        <tr>
-                          <th>Điểm cấu trúc /70</th>
-                          {s.submissions.map((d, i) => (
-                            <td key={i}>{evaluate(d).indicative}</td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <th>Lập luận nguyên văn</th>
-                          {s.submissions.map((d, i) => (
-                            <td className="preserve" key={i}>
-                              {d.rationale}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <th>Hành động</th>
-                          {s.submissions.map((d, i) => (
-                            <td key={i}>
-                              {d.actions
-                                .map(
-                                  (a) =>
-                                    actions.find((x) => x.id === a.id)?.label +
-                                    " (" +
-                                    (a.target === "all"
-                                      ? "Toàn chiến dịch"
-                                      : shortNames[a.target]) +
-                                    ")",
-                                )
-                                .join(", ")}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <th>Theo dõi</th>
-                          {s.submissions.map((d, i) => (
-                            <td key={i}>
-                              {d.monitors.join(", ")}
-                              <p>{d.rule}</p>
-                            </td>
-                          ))}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </section>
-              )}
               <FinalSubmission s={s} set={set} />
               <Report
                 d={submitted}
