@@ -28,7 +28,6 @@ export function DataComments({
             (không bắt buộc).
           </p>
         </div>
-        <span className="badge">{s.evidence.length}/3</span>
       </div>
       {s.evidence.map((e, i) => (
         <div className="evidence-row" key={i}>
@@ -47,31 +46,31 @@ export function DataComments({
           </button>
         </div>
       ))}
-      {s.evidence.length < 3 && (
-        <div className="evidence-input">
-          <label className="grow">
-            Nhận xét
-            <input
-              maxLength={1000}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Ad Set nào đáng chú ý? Chỉ số hoặc xu hướng nào cho thấy điều đó?"
-            />
-          </label>
-          <button
-            disabled={text.trim().length < 15}
-            onClick={() => {
-              set({
-                ...s,
-                evidence: [...s.evidence, { text: text.trim(), kind: "observation" }],
-              });
-              setText("");
-            }}
-          >
-            Lưu nhận xét
-          </button>
-        </div>
-      )}
+      <div className="evidence-input">
+        <label className="grow">
+          Nhận xét
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Ad Set nào đáng chú ý? Chỉ số hoặc xu hướng nào cho thấy điều đó?"
+          />
+        </label>
+        <button
+          disabled={!text.trim()}
+          onClick={() => {
+            set({
+              ...s,
+              evidence: [
+                ...s.evidence,
+                { text: text.trim(), kind: "observation" },
+              ],
+            });
+            setText("");
+          }}
+        >
+          Lưu nhận xét
+        </button>
+      </div>
     </section>
   );
 }
@@ -94,7 +93,8 @@ export default function Decisions({
               <div>
                 <h2>Phân bổ ngân sách tuần tiếp theo</h2>
                 <p>
-                  Kéo để chỉnh từng nhóm, bước 200.000 ₫. Khi tăng vượt tổng 8 triệu, ngân sách nhóm khác sẽ tự giảm.
+                  Kéo để chỉnh từng nhóm, bước 200.000 ₫. Khi tăng vượt tổng 8
+                  triệu, ngân sách nhóm khác sẽ tự giảm.
                 </p>
               </div>
               <button
@@ -144,7 +144,11 @@ export default function Decisions({
                   onChange={(e) =>
                     set((current) => ({
                       ...current,
-                      budgets: clampBudget(current.budgets, id, +e.target.value),
+                      budgets: clampBudget(
+                        current.budgets,
+                        id,
+                        +e.target.value,
+                      ),
                     }))
                   }
                 />
@@ -165,15 +169,13 @@ export default function Decisions({
               <textarea
                 aria-label="Giải thích"
                 rows={7}
-                maxLength={4000}
                 value={s.rationale}
                 onChange={(e) => set({ ...s, rationale: e.target.value })}
-                placeholder={"Câu trả lời nên gồm:\n1. Ad Set nào tăng, giảm hoặc giữ nguyên ngân sách.\n2. Số liệu hoặc xu hướng cụ thể làm dẫn chứng.\n3. Lý do dữ liệu đó dẫn đến quyết định của bạn.\n4. Đánh đổi, rủi ro và giả thuyết cần kiểm chứng."}
+                placeholder={
+                  "Câu trả lời nên gồm:\n1. Ad Set nào tăng, giảm hoặc giữ nguyên ngân sách.\n2. Số liệu hoặc xu hướng cụ thể làm dẫn chứng.\n3. Lý do dữ liệu đó dẫn đến quyết định của bạn.\n4. Đánh đổi, rủi ro và giả thuyết cần kiểm chứng."
+                }
               />
             </label>
-            <small>
-              {s.rationale.length}/4.000 ký tự · Gợi ý 300–800 ký tự.
-            </small>
           </section>
         </>
       )}
@@ -296,7 +298,6 @@ export default function Decisions({
               <textarea
                 aria-label="Điều kiện và hành động điều chỉnh"
                 rows={3}
-                maxLength={2000}
                 value={s.rule}
                 onChange={(e) => set({ ...s, rule: e.target.value })}
                 placeholder="Nếu chỉ số nào thay đổi, trong khoảng thời gian nào, bạn sẽ kiểm tra hoặc điều chỉnh điều gì?"

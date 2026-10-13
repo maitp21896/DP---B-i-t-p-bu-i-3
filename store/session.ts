@@ -42,17 +42,15 @@ const draftSchema = z.object({
       }),
     )
     .max(3),
-  rationale: z.string().max(4000),
-  evidence: z
-    .array(
-      z.object({
-        text: z.string().max(1000),
-        kind: z.enum(["observation", "hypothesis"]),
-      }),
-    )
-    .max(3),
+  rationale: z.string(),
+  evidence: z.array(
+    z.object({
+      text: z.string(),
+      kind: z.enum(["observation", "hypothesis"]),
+    }),
+  ),
   monitors: z.array(z.string().max(40)).max(3),
-  rule: z.string().max(2000),
+  rule: z.string(),
   submissions: z.array(decisionSchema).max(2),
   identity: z.object({
     studentName: z.string().max(100),
