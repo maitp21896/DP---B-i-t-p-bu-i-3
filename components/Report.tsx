@@ -78,7 +78,7 @@ export default function Report({
                 <span>{((d.budgets[id] / 8000000) * 100).toFixed(1)}%</span>
               </div>
             ))}
-            {d.evidence.length > 0 && <h3>Phát hiện đã lưu trước đây</h3>}
+            {d.evidence.length > 0 && <h3>Nhận xét về data hiện tại</h3>}
             {d.evidence.map((e, i) => (
               <p key={i}>
                 <b>{e.kind === "observation" ? "Quan sát" : "Giả thuyết"}.</b>{" "}

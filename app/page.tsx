@@ -11,7 +11,7 @@ import {
   Compass,
 } from "lucide-react";
 import Dashboard from "@/components/Dashboard";
-import Decisions from "@/components/Decisions";
+import Decisions, { DataComments } from "@/components/Decisions";
 import Report from "@/components/Report";
 import { IdentityDialog } from "@/components/Identity";
 import FinalSubmission from "@/components/FinalSubmission";
@@ -296,6 +296,7 @@ export default function Home() {
           {s.stage === 1 && (
             <>
               <Dashboard />
+              <DataComments s={s} set={set} />
               <div className="bottom-actions">
                 <p>Tiếp tục để phân bổ ngân sách cho tuần tới.</p>
                 <button
