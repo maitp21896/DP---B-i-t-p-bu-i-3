@@ -1,0 +1,107 @@
+"use client";
+import { useState } from "react";
+import { Decision } from "@/types/campaign";
+import { ids, money, shortNames } from "@/lib/metrics";
+import { actions } from "@/lib/actions";
+import { evaluate } from "@/lib/simulation";
+export function summary(d: Decision) {
+  return `GLOW NATURE — ĐỀ XUẤT TỐI ƯU CHIẾN DỊCH\nMục tiêu: Traffic | Ngân sách 7 ngày: 8.000.000 ₫\n\nPHÂN BỔ\n${ids.map((id) => `${shortNames[id]}: ${money(d.budgets[id])} (${((d.budgets[id] / 8000000) * 100).toFixed(1)}%)`).join("\n")}\n\nPHÁT HIỆN\n${d.evidence.map((e) => `${e.kind === "observation" ? "Quan sát" : "Giả thuyết"}: ${e.text}`).join("\n")}\n\nHÀNH ĐỘNG\n${d.actions.map((a) => `${actions.find((x) => x.id === a.id)?.label} — ${a.target === "all" ? "Toàn chiến dịch" : shortNames[a.target]}`).join("\n")}\n\nLẬP LUẬN\n${d.rationale}\n\nTHEO DÕI\n${d.monitors.join(", ")}\n${d.rule}\n\nRỦI RO\n${evaluate(d).risks.join("\n")}`;
+}
+export default function Report({ d }: { d: Decision }) {
+  const [copy, setCopy] = useState("");
+  async function copyText() {
+    try {
+      await navigator.clipboard.writeText(summary(d));
+      setCopy("Đã sao chép");
+    } catch {
+      setCopy("Không thể truy cập clipboard. Dùng Tải bản tóm tắt.");
+    }
+  }
+  function download() {
+    const url = URL.createObjectURL(
+      new Blob([summary(d)], { type: "text/plain;charset=utf-8" }),
+    );
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Glow-Nature-De-xuat.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  return (
+    <>
+      <div className="report-tools no-print">
+        <button onClick={() => window.print()}>In / Lưu PDF</button>
+        <button className="secondary" onClick={copyText}>
+          Sao chép tóm tắt
+        </button>
+        <button className="text-button" onClick={download}>
+          Tải bản tóm tắt
+        </button>
+        <span role="status">{copy}</span>
+        <small>
+          Chọn A4 ngang, tắt header/footer trình duyệt. Văn bản rất dài sẽ mở
+          rộng để không bị cắt.
+        </small>
+      </div>
+      <article className="proposal">
+        <header>
+          <div>
+            <span className="eyebrow">GLOW NATURE · ĐỀ XUẤT 7 NGÀY</span>
+            <h2>Đề xuất tối ưu chiến dịch</h2>
+            <p>Traffic · Ngân sách 8.000.000 ₫ · Tomorrow Marketers Academy</p>
+          </div>
+          <span className="badge">Bản đề xuất học viên</span>
+        </header>
+        <div className="report-grid">
+          <section>
+            <h3>01 / Phân bổ ngân sách</h3>
+            {ids.map((id) => (
+              <div className="report-budget" key={id}>
+                <span>{shortNames[id]}</span>
+                <strong>{money(d.budgets[id])}</strong>
+                <span>{((d.budgets[id] / 8000000) * 100).toFixed(1)}%</span>
+              </div>
+            ))}
+            <h3>02 / Phát hiện chính</h3>
+            {d.evidence.map((e, i) => (
+              <p key={i}>
+                <b>{e.kind === "observation" ? "Quan sát" : "Giả thuyết"}.</b>{" "}
+                {e.text}
+              </p>
+            ))}
+            <h3>03 / Hành động tối ưu</h3>
+            {d.actions.map((a) => (
+              <p key={a.id}>
+                {actions.find((x) => x.id === a.id)?.label}
+                <br />
+                <small>
+                  Áp dụng:{" "}
+                  {a.target === "all"
+                    ? "Toàn chiến dịch"
+                    : shortNames[a.target]}
+                </small>
+              </p>
+            ))}
+          </section>
+          <section>
+            <h3>04 / Lập luận nguyên văn</h3>
+            <p className="preserve">{d.rationale}</p>
+            <h3>05 / Kế hoạch theo dõi</h3>
+            <p>
+              <strong>{d.monitors.join(" · ")}</strong>
+            </p>
+            <p className="preserve">{d.rule}</p>
+            <h3>06 / Rủi ro & khoảng trống bằng chứng</h3>
+            {evaluate(d).risks.map((r) => (
+              <p key={r}>{r}</p>
+            ))}
+          </section>
+        </div>
+        <footer>
+          Đánh giá phục vụ học tập, không dự báo kết quả Meta Ads. Purchase/CPA
+          là chỉ số bổ trợ. Lập luận cần giảng viên xem xét.
+        </footer>
+      </article>
+    </>
+  );
+}
