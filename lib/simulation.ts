@@ -22,18 +22,9 @@ export function validate(d: Decision): string[] {
     )
   )
     errors.push("Chọn 1–3 hành động với Ad Set phù hợp.");
-  if (
-    d.rationale.trim().length < 80 ||
-    d.rationale.trim().split(/\s+/).length < 15
-  )
-    errors.push(
-      "Hãy viết giải thích có dẫn chứng (ít nhất 80 ký tự và 15 từ); gợi ý 300–800 ký tự.",
-    );
-  if (
-    d.evidence.length > 3 ||
-    d.evidence.some((e) => e.text.trim().length < 15)
-  )
-    errors.push("Nhận xét đã lưu không hợp lệ.");
+  if (!d.rationale.trim()) errors.push("Nhập giải thích của bạn.");
+  if (d.evidence.some((e) => !e.text.trim()))
+    errors.push("Nhận xét đã lưu không được để trống.");
   if (
     d.monitors.length < 2 ||
     d.monitors.length > 3 ||
@@ -41,8 +32,8 @@ export function validate(d: Decision): string[] {
     d.monitors.some((m) => !monitorOptions.includes(m))
   )
     errors.push("Chọn 2–3 chỉ số theo dõi.");
-  if (d.rule.trim().length < 40)
-    errors.push("Viết điều kiện điều chỉnh cụ thể (ít nhất 40 ký tự).");
+  if (!d.rule.trim())
+    errors.push("Nhập điều kiện điều chỉnh của bạn.");
   return errors;
 }
 export function evaluate(d: Decision) {
@@ -137,9 +128,7 @@ export function evaluate(d: Decision) {
     {
       name: "Theo dõi & điều chỉnh",
       weight: 15,
-      points:
-        Math.min(10, supported.length * 5) +
-        (d.rule.trim().length >= 40 ? 5 : 0),
+      points: Math.min(10, supported.length * 5) + (d.rule.trim() ? 5 : 0),
     },
   ];
   return {

@@ -41,19 +41,17 @@ export const decisionSchema = z
       )
       .min(1)
       .max(3),
-    rationale: z.string().min(80).max(4000),
-    evidence: z
-      .array(
-        z
-          .object({
-            kind: z.enum(["observation", "hypothesis"]),
-            text: z.string().min(15).max(1000),
-          })
-          .strict(),
-      )
-      .max(3),
+    rationale: z.string(),
+    evidence: z.array(
+      z
+        .object({
+          kind: z.enum(["observation", "hypothesis"]),
+          text: z.string(),
+        })
+        .strict(),
+    ),
     monitors: z.array(z.string().max(40)).min(2).max(3),
-    rule: z.string().min(40).max(2000),
+    rule: z.string(),
   })
   .strict()
   .superRefine((d, ctx) => {

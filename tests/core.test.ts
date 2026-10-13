@@ -86,7 +86,11 @@ test("budget never exceeds cap and uses increments", () => {
     }
 });
 test("raising a fully allocated slider transfers funds and decreasing releases them", () => {
-  const raised = clampBudget({ broad: 3000000, lal: 3000000, rt: 2000000 }, "broad", 4400000);
+  const raised = clampBudget(
+    { broad: 3000000, lal: 3000000, rt: 2000000 },
+    "broad",
+    4400000,
+  );
   assert.deepEqual(raised, { broad: 4400000, lal: 1600000, rt: 2000000 });
   const lowered = clampBudget(raised, "broad", 2800000);
   assert.deepEqual(lowered, { broad: 2800000, lal: 1600000, rt: 2000000 });
@@ -96,7 +100,8 @@ test("raising a fully allocated slider transfers funds and decreasing releases t
 test("submission requires explanation, budget and monitoring", () => {
   const d = { ...proposal(), evidence: [] };
   assert.deepEqual(validate(d), []);
-  assert.ok(validate({ ...d, rationale: "ok" }).length);
+  assert.deepEqual(validate({ ...d, rationale: "ok", rule: "ok" }), []);
+  assert.ok(validate({ ...d, rationale: " " }).length);
   assert.ok(validate({ ...d, budgets: { ...d.budgets, rt: 0 } }).length);
   assert.ok(
     validate({ ...d, actions: [{ id: "rtCreative", target: "broad" }] }).length,

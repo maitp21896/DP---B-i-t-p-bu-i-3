@@ -47,14 +47,14 @@ test("identity validated without using name as authentication", () => {
   ])
     assert.equal(identitySchema.safeParse(d).success, false);
 });
-test("strict final payload rejects tampering, oversized text, duplicates and honeypot", () => {
+test("strict final payload rejects tampering, wrong types, duplicates and honeypot", () => {
   assert.equal(submissionSchema.safeParse(input).success, true);
   for (const d of [
     { ...input, feedback: { indicative: 70 } },
     { ...input, website: "bot" },
     {
       ...input,
-      versions: [{ ...input.versions[0], rationale: "x".repeat(4001) }],
+      versions: [{ ...input.versions[0], rationale: 123 }],
     },
     {
       ...input,
@@ -162,4 +162,21 @@ test("origin guard accepts the actual request Host behind Next proxy", () => {
       ),
     HttpError,
   );
+});
+
+test("answers accept short text, long text and many optional comments without keywords", () => {
+  for (const text of ["Ừ", "x".repeat(5000)]) {
+    const version = {
+      ...input.versions[0],
+      rationale: text,
+      rule: text,
+      evidence: Array.from({ length: 5 }, () => ({
+        kind: "observation",
+        text: "Ý",
+      })),
+    };
+    const saved = submissionSchema.parse({ ...input, versions: [version] });
+    assert.equal(saved.versions[0].rationale, text);
+    assert.equal(saved.versions[0].evidence.length, 5);
+  }
 });

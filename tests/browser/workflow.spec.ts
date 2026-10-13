@@ -393,3 +393,40 @@ test("20-minute reminder still allows ordinary submission without a late flag", 
     .click();
   await expect(page.getByText("Đã nộp đề xuất cho giảng viên")).toBeVisible();
 });
+
+test("free-text answers allow brief wording, long drafts and more than three comments", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await begin(page);
+  for (let i = 0; i < 5; i++) {
+    await page.getByLabel("Nhận xét", { exact: true }).fill("Ý");
+    await page
+      .getByRole("button", { name: "Lưu nhận xét", exact: true })
+      .click();
+  }
+  await expect(page.locator(".evidence-row")).toHaveCount(5);
+  await page
+    .getByRole("button", { name: "Tiếp theo · Bài 1", exact: true })
+    .click();
+  const explanation = page.getByLabel("Giải thích", { exact: true });
+  const long = "x".repeat(5001);
+  await explanation.fill(long);
+  await page.reload();
+  await expect(explanation).toHaveValue(long);
+  await explanation.fill("Ừ");
+  await page
+    .getByRole("button", { name: "Tiếp theo · Bài 2", exact: true })
+    .click();
+  await page.getByLabel("Kiểm tra tốc độ mobile và hụt").check();
+  await page
+    .getByRole("button", { name: "Tiếp theo · Bài 3", exact: true })
+    .click();
+  await page.getByRole("checkbox", { name: "Cost / LPV", exact: true }).check();
+  await page.getByRole("checkbox", { name: "ATC Rate", exact: true }).check();
+  await page.getByLabel("Điều kiện và hành động điều chỉnh").fill("Ừ");
+  await page.getByRole("button", { name: "Xem tóm tắt bài làm" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Tóm tắt bài làm", exact: true }),
+  ).toBeVisible();
+});
