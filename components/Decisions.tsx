@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Session, AdId } from "@/types/campaign";
 import {
   BUDGET,
@@ -10,6 +10,71 @@ import {
   shortNames,
 } from "@/lib/metrics";
 import { actions, monitorOptions } from "@/lib/actions";
+export function DataComments({
+  s,
+  set,
+}: {
+  s: Session;
+  set: Dispatch<SetStateAction<Session>>;
+}) {
+  const [text, setText] = useState("");
+  return (
+    <section className="card">
+      <div className="section-head">
+        <div>
+          <h2>Nhận xét về data hiện tại</h2>
+          <p>
+            Ghi lại những điểm đáng chú ý trong dữ liệu trước khi làm bài tập
+            (không bắt buộc).
+          </p>
+        </div>
+        <span className="badge">{s.evidence.length}/3</span>
+      </div>
+      {s.evidence.map((e, i) => (
+        <div className="evidence-row" key={i}>
+          <span className="badge">
+            {e.kind === "observation" ? "Quan sát" : "Giả thuyết"}
+          </span>
+          <p>{e.text}</p>
+          <button
+            className="text-button"
+            aria-label={`Xóa nhận xét ${i + 1}`}
+            onClick={() =>
+              set({ ...s, evidence: s.evidence.filter((_, j) => i !== j) })
+            }
+          >
+            Xóa
+          </button>
+        </div>
+      ))}
+      {s.evidence.length < 3 && (
+        <div className="evidence-input">
+          <label className="grow">
+            Nhận xét
+            <input
+              maxLength={1000}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Ad Set nào đáng chú ý? Chỉ số hoặc xu hướng nào cho thấy điều đó?"
+            />
+          </label>
+          <button
+            disabled={text.trim().length < 15}
+            onClick={() => {
+              set({
+                ...s,
+                evidence: [...s.evidence, { text: text.trim(), kind: "observation" }],
+              });
+              setText("");
+            }}
+          >
+            Lưu nhận xét
+          </button>
+        </div>
+      )}
+    </section>
+  );
+}
 export default function Decisions({
   s,
   set,

@@ -253,17 +253,6 @@ export default function Dashboard() {
           </div>
         )}
       </section>
-      <details className="card">
-        <summary>Nguồn dữ liệu & giới hạn đo lường</summary>
-        <p>{dataset.source}</p>
-        {dataset.limitations.map((t) => (
-          <p key={t}>{t}</p>
-        ))}
-        <p>
-          Dữ liệu giả lập phục vụ lớp học. Chưa có mâu thuẫn giữa công thức tổng
-          quan và dữ liệu theo ngày được phát hiện khi nhập.
-        </p>
-      </details>
     </>
   );
 }
