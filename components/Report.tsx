@@ -55,7 +55,9 @@ export default function Report({
       <article className="proposal">
         <header>
           <div>
-            <span className="eyebrow">GLOW NATURE · ĐỀ XUẤT 7 NGÀY</span>
+            <span className="eyebrow">
+              TOMORROW MARKETERS · CASE GLOW NATURE
+            </span>
             <h2>Đề xuất tối ưu chiến dịch</h2>
             <p>Traffic · Ngân sách 8.000.000 ₫ · Tomorrow Marketers Academy</p>
           </div>

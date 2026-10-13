@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "Bài tập thực hành Meta Consideration & Conversion Optimization",
+  title:
+    "Tomorrow Marketers — Bài tập thực hành Meta Consideration & Conversion Optimization",
   description:
     "Thực hành phân tích dữ liệu Meta Ads và đề xuất tối ưu cho case Glow Nature — Tomorrow Marketers Academy",
 };
