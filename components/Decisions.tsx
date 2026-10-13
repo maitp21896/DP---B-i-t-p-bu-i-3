@@ -105,7 +105,7 @@ export default function Decisions({
               <div>
                 <h2>Phân bổ ngân sách tuần tiếp theo</h2>
                 <p>
-                  7 ngày · bước 200.000 ₫ · không có một tỷ lệ duy nhất đúng.
+                  Kéo để chỉnh từng nhóm, bước 200.000 ₫. Khi tăng vượt tổng 8 triệu, ngân sách nhóm khác sẽ tự giảm.
                 </p>
               </div>
               <button
@@ -153,10 +153,10 @@ export default function Decisions({
                   step="200000"
                   value={s.budgets[id]}
                   onChange={(e) =>
-                    set({
-                      ...s,
-                      budgets: clampBudget(s.budgets, id, +e.target.value),
-                    })
+                    set((current) => ({
+                      ...current,
+                      budgets: clampBudget(current.budgets, id, +e.target.value),
+                    }))
                   }
                 />
                 <div className="budget-value">

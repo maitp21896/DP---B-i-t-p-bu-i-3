@@ -311,7 +311,7 @@ main {
   gap: 20px;
   margin: 17px 0 28px;
 }
-.progress > div {
+.progress > button {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -922,7 +922,7 @@ details p {
   .progress {
     gap: 8px;
   }
-  .progress > div {
+  .progress > button {
     font-size: 9px;
   }
   .section-head {
@@ -963,7 +963,7 @@ details p {
   .page-title h1 {
     font-size: 23px;
   }
-  .progress > div {
+  .progress > button {
     font-size: 8px;
     display: block;
   }
@@ -1556,8 +1556,8 @@ details p {
     color: #354f5c;
   }
   .exercise-name { letter-spacing: 0.3px; font-size: 14px; }
-  .progress > div, .progress span { font-size: 12px; }
-  .progress > div { color: var(--muted); }
+  .progress > button, .progress span { font-size: 12px; }
+  .progress > button { color: var(--muted); }
   label, .action > label:first-child, .legend label, .target,
   .target select, .report-budget, .rubric, details summary { font-size: 14px; }
   small, .kpi small, .monitor small, .identity-later,
@@ -1595,3 +1595,16 @@ details p {
   .bottom-actions { flex-wrap: wrap; }
   .bottom-actions button { width: 100%; }
 }
+
+.progress > button {
+  background: transparent;
+  border-radius: 0;
+  padding: 8px 0 13px;
+  justify-content: flex-start;
+  text-align: left;
+  font-weight: 500;
+  min-width: 0;
+}
+.progress > button:hover:not(:disabled) { background: #eaf5f1; color: var(--teal); }
+.progress > button[aria-current="step"] { font-weight: 700; }
+input[type="range"] { cursor: pointer; min-height: 32px; }

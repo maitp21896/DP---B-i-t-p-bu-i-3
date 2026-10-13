@@ -74,10 +74,19 @@ export const shortNames: Record<AdId, string> = {
 };
 export const BUDGET = 8000000;
 export function clampBudget(b: Record<AdId, number>, id: AdId, value: number) {
-  const remaining =
-    BUDGET - ids.filter((x) => x !== id).reduce((s, x) => s + b[x], 0);
-  return {
+  const next = {
     ...b,
-    [id]: Math.max(0, Math.min(remaining, Math.round(value / 200000) * 200000)),
+    [id]: Math.max(0, Math.min(BUDGET, Math.round(value / 200000) * 200000)),
   };
+  let excess = ids.reduce((sum, key) => sum + next[key], 0) - BUDGET;
+  // Transfer from the largest other allocation first, in the same 200k steps.
+  const others = ids
+    .filter((key) => key !== id)
+    .sort((a, c) => next[c] - next[a]);
+  for (const key of others) {
+    const reduction = Math.min(next[key], Math.max(0, excess));
+    next[key] -= reduction;
+    excess -= reduction;
+  }
+  return next;
 }
