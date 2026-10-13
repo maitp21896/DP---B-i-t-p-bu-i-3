@@ -30,6 +30,14 @@ const input = {
   versions: [{ budgets, actions, evidence, rationale, monitors, rule }],
   website: "",
 };
+test("single explanation can be submitted without a separate evidence field", () => {
+  const parsed = submissionSchema.parse({
+    ...input,
+    versions: input.versions.map((version) => ({ ...version, evidence: [] })),
+  });
+  assert.equal(parsed.versions[0].rationale, rationale);
+  assert.deepEqual(parsed.versions[0].evidence, []);
+});
 test("identity validated without using name as authentication", () => {
   assert.equal(identitySchema.parse(input.identity).classCode, "DP27");
   for (const d of [

@@ -14,11 +14,7 @@ async function budget(page: Page) {
   await page
     .getByRole("button", { name: "Tiếp theo · Bài 1", exact: true })
     .click();
-  await page
-    .getByLabel("Nhận xét của bạn", { exact: true })
-    .fill("Retargeting có Frequency 6,8 và CPA ngày 7 tăng so với ngày 1.");
-  await page.getByRole("button", { name: "Lưu nhận xét" }).click();
-  await page.getByLabel("Lập luận của bạn", { exact: true }).fill(rationale);
+  await page.getByLabel("Giải thích", { exact: true }).fill(rationale);
 }
 async function finish(page: Page) {
   await page
@@ -72,7 +68,7 @@ test("popup, case and dataset, three tasks, revision, PDF and reset work end-to-
   await expect(broad).toHaveValue("8000000");
   await page.reload();
   await expect(
-    page.getByLabel("Lập luận của bạn", { exact: true }),
+    page.getByLabel("Giải thích", { exact: true }),
   ).toHaveValue(rationale);
   await page.getByRole("button", { name: "Xem lại yêu cầu bài tập" }).click();
   await expect(
@@ -133,11 +129,7 @@ test("each assignment validates before Next; drafts persist when moving back", a
       exact: true,
     }),
   ).toBeVisible();
-  await page
-    .getByLabel("Nhận xét của bạn", { exact: true })
-    .fill("Broad có LPV Rate 52%, thấp hơn Lookalike 70%.");
-  await page.getByRole("button", { name: "Lưu nhận xét" }).click();
-  await page.getByLabel("Lập luận của bạn", { exact: true }).fill(rationale);
+  await page.getByLabel("Giải thích", { exact: true }).fill(rationale);
   await page
     .getByRole("button", { name: "Tiếp theo · Bài 2", exact: true })
     .click();
@@ -147,7 +139,7 @@ test("each assignment validates before Next; drafts persist when moving back", a
   await expect(page.locator(".error[role=alert]")).toContainText("hành động");
   await page.getByRole("button", { name: "← Quay lại", exact: true }).click();
   await expect(
-    page.getByLabel("Lập luận của bạn", { exact: true }),
+    page.getByLabel("Giải thích", { exact: true }),
   ).toHaveValue(rationale);
 });
 test("simulation does not submit; failure retries exact snapshot and confirmation persists", async ({
@@ -280,7 +272,7 @@ test("legacy v2 draft keeps identity, budgets and rationale in the new task flow
     page.getByRole("slider", { name: "Ngân sách Lookalike 1%" }),
   ).toHaveValue("3600000");
   expect(
-    await page.getByLabel("Lập luận của bạn", { exact: true }).inputValue(),
+    await page.getByLabel("Giải thích", { exact: true }).inputValue(),
   ).toContain("Đây là lập luận nguyên văn");
   await expect(
     page.getByRole("dialog", { name: "Thông tin học viên" }),
