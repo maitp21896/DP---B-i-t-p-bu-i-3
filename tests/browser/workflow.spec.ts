@@ -91,10 +91,10 @@ test("popup, case and dataset, three tasks, revision, PDF and reset work end-to-
   await page
     .getByRole("button", { name: "Tiếp theo · Bài 3", exact: true })
     .click();
-  await page.getByRole("button", { name: "Xem tóm tắt bài đã sửa" }).click();
+  await page.getByRole("button", { name: "Xem tóm tắt bài làm" }).click();
   await expect(
     page.getByRole("button", { name: "Chỉnh sửa bài làm" }),
-  ).toHaveCount(0);
+  ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Tóm tắt bài làm", exact: true }),
   ).toBeVisible();
@@ -429,4 +429,114 @@ test("free-text answers allow brief wording, long drafts and more than three com
   await expect(
     page.getByRole("heading", { name: "Tóm tắt bài làm", exact: true }),
   ).toBeVisible();
+});
+
+test("practice can be revised repeatedly before and after successful submissions", async ({
+  page,
+}) => {
+  const ids: string[] = [];
+  await page.route("**/api/submissions", async (route) => {
+    const body = route.request().postDataJSON();
+    ids.push(body.id);
+    expect(body.versions.length).toBeLessThanOrEqual(2);
+    await route.fulfill({
+      status: 201,
+      contentType: "application/json",
+      body: JSON.stringify({
+        id: body.id,
+        submittedAt: new Date().toISOString(),
+        status: "submitted",
+      }),
+    });
+  });
+  await page.goto("/");
+  await begin(page);
+  await budget(page);
+  await finish(page);
+  for (let i = 0; i < 5; i++) {
+    await page
+      .locator(".progress")
+      .getByRole("button", { name: "Bài 1 · Ngân sách" })
+      .click();
+    await page
+      .getByLabel("Giải thích", { exact: true })
+      .fill(`Lần luyện tập ${i}`);
+    await page
+      .locator(".progress")
+      .getByRole("button", { name: "Bài 3 · Theo dõi" })
+      .click();
+    await page.getByRole("button", { name: "Xem tóm tắt bài làm" }).click();
+    await expect(page.locator(".proposal")).toContainText(`Lần luyện tập ${i}`);
+    await expect(
+      page.getByRole("button", { name: "Chỉnh sửa bài làm" }),
+    ).toBeVisible();
+  }
+  for (let i = 0; i < 3; i++) {
+    await page.getByLabel("Tôi đã kiểm tra đề xuất").check();
+    await page
+      .getByRole("button", { name: "Nộp đề xuất cuối cùng", exact: true })
+      .click();
+    await expect(page.getByText("Đã nộp đề xuất cho giảng viên")).toBeVisible();
+    await page.getByRole("button", { name: "Chỉnh sửa bài làm" }).click();
+    await page
+      .getByLabel("Giải thích", { exact: true })
+      .fill(`Bài nộp mới ${i}`);
+    await page
+      .locator(".progress")
+      .getByRole("button", { name: "Kết quả & nộp bài" })
+      .click();
+    await expect(page.locator(".proposal")).toContainText(`Bài nộp mới ${i}`);
+  }
+  expect(new Set(ids).size).toBe(3);
+  await page.reload();
+  await expect(page.locator(".proposal")).toContainText("Bài nộp mới 2");
+});
+
+test("a delayed old submission confirmation does not overwrite a new practice draft", async ({
+  page,
+}) => {
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/api/submissions", async (route) => {
+    const body = route.request().postDataJSON();
+    await held;
+    await route.fulfill({
+      status: 201,
+      contentType: "application/json",
+      body: JSON.stringify({
+        id: body.id,
+        submittedAt: new Date().toISOString(),
+        status: "submitted",
+      }),
+    });
+  });
+  await page.goto("/");
+  await begin(page);
+  await budget(page);
+  await finish(page);
+  await page.getByLabel("Tôi đã kiểm tra đề xuất").check();
+  const sent = page.waitForRequest("**/api/submissions");
+  await page
+    .getByRole("button", { name: "Nộp đề xuất cuối cùng", exact: true })
+    .click();
+  await sent;
+  await page
+    .locator(".progress")
+    .getByRole("button", { name: "Bài 1 · Ngân sách" })
+    .click();
+  await page
+    .getByLabel("Giải thích", { exact: true })
+    .fill("Bài đang luyện tiếp");
+  const received = page.waitForResponse("**/api/submissions");
+  release();
+  await received;
+  await page
+    .locator(".progress")
+    .getByRole("button", { name: "Kết quả & nộp bài" })
+    .click();
+  await expect(page.locator(".proposal")).toContainText("Bài đang luyện tiếp");
+  await expect(page.locator(".final-submit")).toBeVisible();
+  await expect(page.getByText("Đã nộp đề xuất cho giảng viên")).toHaveCount(0);
 });

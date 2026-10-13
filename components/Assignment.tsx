@@ -36,8 +36,9 @@ export function Assignment() {
         ))}
       </div>
       <p className="caption">
-        Đánh giá mô phỏng chưa phải nộp bài. Bạn được sửa một lần, sau đó chọn
-        “Nộp đề xuất cuối cùng” để gửi giảng viên.
+        Bạn có thể quay lại các bài và chỉnh sửa bao nhiêu lần cũng được. Chọn
+        “Nộp đề xuất cuối cùng” khi muốn gửi bài cho giảng viên; sau khi nộp vẫn
+        có thể luyện tập và nộp lại.
       </p>
     </section>
   );

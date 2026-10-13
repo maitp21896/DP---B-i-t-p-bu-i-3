@@ -16,7 +16,7 @@ import { IdentityDialog } from "@/components/Identity";
 import FinalSubmission from "@/components/FinalSubmission";
 import { Assignment, AssignmentDialog } from "@/components/Assignment";
 import { identitySchema } from "@/lib/submissions/schema";
-import { useSession } from "@/store/session";
+import { useSession, newIdentifiers } from "@/store/session";
 import { validate } from "@/lib/simulation";
 import { Decision } from "@/types/campaign";
 const steps = [
@@ -77,8 +77,14 @@ export default function Home() {
     };
     const problems = validate(decision);
     setErrors(problems);
-    if (problems.length === 0 && s.submissions.length < 2) {
-      set({ ...s, stage: 5, submissions: [...s.submissions, decision] });
+    if (problems.length === 0) {
+      set({
+        ...s,
+        stage: 5,
+        submissions: s.submissions.length
+          ? [s.submissions[0], decision]
+          : [decision],
+      });
       window.scrollTo(0, 0);
     }
   }
@@ -87,12 +93,7 @@ export default function Home() {
       setShowIdentity(true);
       return;
     }
-    if (
-      [2, 3, 4].includes(stage) &&
-      (s.delivery || s.pendingSubmission || s.submissions.length === 2)
-    )
-      return;
-    if (stage === 5 && !submitted) {
+    if (stage === 5 && !s.delivery && !s.pendingSubmission) {
       const firstIncomplete = [2, 3, 4].find((task) => taskErrors(task).length);
       if (firstIncomplete) {
         set({ ...s, stage: firstIncomplete });
@@ -105,6 +106,14 @@ export default function Home() {
     set({
       ...s,
       stage,
+      ...(stage < 5 && (s.delivery || s.pendingSubmission)
+        ? {
+            ...newIdentifiers(),
+            delivery: null,
+            pendingSubmission: null,
+            submissions: [],
+          }
+        : {}),
       ...(identity.success ? { identity: identity.data } : {}),
     });
     setErrors([]);
@@ -133,12 +142,6 @@ export default function Home() {
               <button
                 key={step}
                 className={s.stage === i ? "nav active" : "nav"}
-                disabled={
-                  [2, 3, 4].includes(i) &&
-                  (s.submissions.length === 2 ||
-                    !!s.delivery ||
-                    !!s.pendingSubmission)
-                }
                 onClick={() => go(i)}
               >
                 <Icon size={19} />
@@ -235,12 +238,6 @@ export default function Home() {
                 className={i <= s.stage ? "done" : ""}
                 key={label}
                 aria-current={s.stage === i ? "step" : undefined}
-                disabled={
-                  [2, 3, 4].includes(i) &&
-                  (s.submissions.length === 2 ||
-                    !!s.delivery ||
-                    !!s.pendingSubmission)
-                }
                 onClick={() => go(i)}
               >
                 <span>{i + 1}</span>
@@ -316,14 +313,7 @@ export default function Home() {
               <DataComments s={s} set={set} />
               <div className="bottom-actions">
                 <p>Tiếp tục để phân bổ ngân sách cho tuần tới.</p>
-                <button
-                  disabled={
-                    s.submissions.length === 2 ||
-                    !!s.delivery ||
-                    !!s.pendingSubmission
-                  }
-                  onClick={() => go(2)}
-                >
+                <button onClick={() => go(2)}>
                   Tiếp theo · Bài 1 <ArrowRight size={17} />
                 </button>
               </div>
@@ -370,10 +360,7 @@ export default function Home() {
                   </button>
                 ) : (
                   <button onClick={submit}>
-                    {s.submissions.length === 1
-                      ? "Xem tóm tắt bài đã sửa"
-                      : "Xem tóm tắt bài làm"}{" "}
-                    <ArrowRight size={17} />
+                    Xem tóm tắt bài làm <ArrowRight size={17} />
                   </button>
                 )}
               </div>
@@ -384,13 +371,9 @@ export default function Home() {
               <section className="card no-print">
                 <h2>Tóm tắt bài làm</h2>
                 <p>Kiểm tra quyết định và câu trả lời của bạn trước khi nộp.</p>
-                {s.submissions.length === 1 &&
-                  !s.delivery &&
-                  !s.pendingSubmission && (
-                    <button className="secondary" onClick={() => go(2)}>
-                      Chỉnh sửa bài làm
-                    </button>
-                  )}
+                <button className="secondary" onClick={() => go(2)}>
+                  Chỉnh sửa bài làm
+                </button>
               </section>
               <FinalSubmission s={s} set={set} />
               <Report

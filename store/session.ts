@@ -67,7 +67,7 @@ const draftSchema = z.object({
     .nullable(),
   pendingSubmission: submissionSchema.nullable(),
 });
-function newIdentifiers() {
+export function newIdentifiers() {
   return {
     sessionId: crypto.randomUUID(),
     receiptToken: Array.from(crypto.getRandomValues(new Uint8Array(32)), (n) =>

@@ -52,11 +52,15 @@ export default function FinalSubmission({
         throw new Error(
           "Máy chủ chưa xác nhận đúng bài nộp. Vui lòng thử lại.",
         );
-      set((current) => ({
-        ...current,
-        delivery: receipt,
-        pendingSubmission: null,
-      }));
+      set((current) =>
+        current.sessionId === parsed.data.id
+          ? {
+              ...current,
+              delivery: receipt,
+              pendingSubmission: null,
+            }
+          : current,
+      );
     } catch (e) {
       setError(
         e instanceof Error
@@ -73,8 +77,8 @@ export default function FinalSubmission({
         <span className="eyebrow">MÁY CHỦ ĐÃ XÁC NHẬN</span>
         <h2>Đã nộp đề xuất cho giảng viên</h2>
         <p>
-          Bài cuối cùng và lịch sử điều chỉnh đã được lưu. Bạn có thể in hoặc
-          tải bản sao bên dưới.
+          Bài nộp này đã được lưu. Bạn có thể in bản sao, hoặc chỉnh sửa và nộp
+          lại bất kỳ lúc nào.
         </p>
         <p>
           Mã tham chiếu: <strong className="reference">{s.delivery.id}</strong>
@@ -92,8 +96,8 @@ export default function FinalSubmission({
       <span className="eyebrow">HOÀN TẤT BÀI TẬP</span>
       <h2>Nộp đề xuất cuối cùng</h2>
       <p>
-        Kiểm tra tóm tắt trước khi nộp. Bài đã gửi sẽ được khóa. Mốc 20 phút chỉ
-        để nhắc thời gian; bạn vẫn có thể nộp bài bình thường.
+        Bạn có thể chỉnh sửa và nộp lại bao nhiêu lần cũng được. Mỗi lần nộp
+        thành công được lưu riêng. Mốc 20 phút chỉ để nhắc thời gian.
       </p>
       {s.pendingSubmission ? (
         <p className="notice">
