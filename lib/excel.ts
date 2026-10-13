@@ -27,8 +27,6 @@ export async function classWorkbook(records: StoredSubmission[]) {
       key: "rule",
       width: 60,
     },
-    { header: "Điểm cấu trúc tham khảo /70", key: "score", width: 20 },
-    { header: "Số phiên bản", key: "versions", width: 15 },
   ];
   const history = book.addWorksheet("Lich su va phan hoi");
   history.columns = [
@@ -74,8 +72,6 @@ export async function classWorkbook(records: StoredSubmission[]) {
       date: new Date(r.submitted_at).toLocaleString("vi-VN", {
         timeZone: "Asia/Ho_Chi_Minh",
       }),
-      score: r.final_score,
-      versions: r.versions.length,
     });
     r.versions.forEach((d, i) =>
       history.addRow({
@@ -101,7 +97,7 @@ export async function classWorkbook(records: StoredSubmission[]) {
       c.fill = {
         type: "pattern",
         pattern: "solid",
-        fgColor: { argb: "FF142A35" },
+        fgColor: { argb: "FFC21870" },
       };
       c.alignment = { wrapText: true, vertical: "middle" };
     });
@@ -123,7 +119,7 @@ export async function classWorkbook(records: StoredSubmission[]) {
     "Tong hop lop: bản cuối của mỗi học viên. Lich su va phan hoi: bản đầu và bản điều chỉnh.",
   ]);
   info.addRow([
-    "Câu trả lời được giữ nguyên, không viết lại bằng AI. Điểm /70 chỉ tham khảo; 30 điểm lập luận cần trainer đánh giá.",
+    "Câu trả lời được giữ nguyên để trainer nhận xét; không hiển thị điểm tham khảo trong bảng tổng hợp.",
   ]);
   info.addRow([
     "Dữ liệu có họ tên và bài làm; file chỉ dành cho trainer. Không chia sẻ cho cả lớp.",

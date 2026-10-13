@@ -40,6 +40,9 @@ test("xlsx includes final budgets, identity, original reasoning and both version
   await book.xlsx.load(bytes as never);
   const sheet = book.getWorksheet("Tong hop lop")!;
   assert.equal(sheet.rowCount, 2);
+  assert.equal(sheet.columnCount, 12);
+  assert.ok(!sheet.getRow(1).values.toString().includes("Điểm cấu trúc"));
+  assert.ok(!sheet.getRow(1).values.toString().includes("Số phiên bản"));
   assert.equal(sheet.getCell("B2").value, record.student_name);
   assert.equal(sheet.getCell("E2").value, 2800000);
   assert.equal(sheet.getCell("H2").value, d.rationale);

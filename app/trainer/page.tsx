@@ -47,6 +47,16 @@ export default function Trainer() {
           <span className="eyebrow">KẾT QUẢ HỌC VIÊN · EXCEL</span>
           <h1>Bài nộp của học viên</h1>
           <p>
+            <a
+              className="trainer-back"
+              href="https://docs.google.com/spreadsheets/d/1k7wdWHJbV7jmlDH1cadgvVNpcYUN_5z1s1rzy7whj3s/edit"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Mở Google Sheet kết quả ↗
+            </a>
+          </p>
+          <p>
             Mỗi bài nộp thành công được lưu ngay với thời điểm nhận bài. Tải
             file để lấy dữ liệu mới nhất của tất cả lớp; không cần nhập mã lớp.
           </p>
