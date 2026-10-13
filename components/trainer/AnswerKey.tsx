@@ -6,11 +6,6 @@ export default function TrainerAnswerKey() {
         <h2>Đáp án gợi ý &amp; hướng dẫn nhận xét</h2>
         <p>
           {
-            "Mình đề xuất xây đáp án theo hướng 3 scenarios chiến lược đều có thể hợp lý, tùy vào cách học viên nhìn nhận vấn đề và mức độ ưu tiên của doanh nghiệp."
-          }
-        </p>
-        <p>
-          {
             "Điểm quan trọng: Bài tập này không có một tỷ lệ phân bổ ngân sách duy nhất được xem là đúng. Trainer cần đánh giá học viên ở khả năng đọc dữ liệu → xác định vấn đề → đưa ra quyết định → giải thích và kiểm soát rủi ro."
           }
         </p>
