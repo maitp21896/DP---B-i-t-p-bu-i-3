@@ -1805,3 +1805,37 @@ button:not(.secondary):not(.text-button):not(.nav):not(.progress > button):not(
 .trainer-answer-key .table-scroll {
   margin: 18px 0 24px;
 }
+
+@media screen {
+  .campaign-dataset table,
+  .campaign-dataset tbody th {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .campaign-dataset thead th {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .campaign-dataset .legend label,
+  .campaign-dataset .kpi > span {
+    font-size: 15px;
+  }
+  .campaign-dataset .chart,
+  .campaign-dataset .kpi small {
+    font-size: 14px;
+  }
+}
+.trainer-answer-key ol {
+  padding-left: 24px;
+  margin: 12px 0 20px;
+}
+.trainer-answer-key blockquote {
+  border-left: 3px solid var(--primary);
+  margin: 20px 0;
+  padding: 14px 20px;
+  background: var(--primary-soft);
+}
+.trainer-answer-key blockquote p {
+  margin: 0;
+}

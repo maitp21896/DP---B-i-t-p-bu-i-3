@@ -5,17 +5,19 @@ export default function TrainerAnswerKey() {
         <span className="eyebrow">TOMORROW MARKETERS · CASE GLOW NATURE</span>
         <h2>Đáp án gợi ý &amp; hướng dẫn nhận xét</h2>
         <p>
-          Đáp án tham khảo cho trainer. Có nhiều chiến lược hợp lý; các scenario
-          không phải dự báo kết quả và không dùng làm tỷ lệ cố định để chấm bài.
+          {
+            "Mình đề xuất xây đáp án theo hướng 3 scenarios chiến lược đều có thể hợp lý, tùy vào cách học viên nhìn nhận vấn đề và mức độ ưu tiên của doanh nghiệp."
+          }
+        </p>
+        <p>
+          {
+            "Điểm quan trọng: Bài tập này không có một tỷ lệ phân bổ ngân sách duy nhất được xem là đúng. Trainer cần đánh giá học viên ở khả năng đọc dữ liệu → xác định vấn đề → đưa ra quyết định → giải thích và kiểm soát rủi ro."
+          }
         </p>
       </section>
       <section className="card">
-        <h2>{"1. Phân tích dữ liệu: Những kết luận học viên nên nhận ra"}</h2>
-        <p>
-          {
-            "Bối cảnh: Glow Nature chạy Facebook Traffic 7 ngày với ba Ad Set Broad, Lookalike 1% và Retargeting. Mục tiêu chính là chất lượng truy cập website và xây dựng tệp khách hàng tiềm năng; Purchase và CPA chỉ là các chỉ số chẩn đoán bổ trợ."
-          }
-        </p>
+        <h2>{"1. Phân tích dữ liệu – Những kết luận học viên nên nhận ra"}</h2>
+        <p>{"Dựa trên bộ dữ liệu Glow Nature đã xây dựng:"}</p>
         <div className="table-scroll">
           <table>
             <thead>
@@ -92,90 +94,99 @@ export default function TrainerAnswerKey() {
         </div>
         <p>
           {
-            "Ghi chú: Cost/LPV và tỷ lệ tính từ các tổng số giả lập; số tiền được làm tròn. Xu hướng CPA theo ngày cần đối chiếu dữ liệu gốc nếu sử dụng trong app."
+            "Cost/LPV và các tỷ lệ được tính từ số liệu tổng hợp của case. Các kết luận về xu hướng CPA cần xem cùng bảng dữ liệu theo ngày."
           }
         </p>
         <h3>
           {
-            "Insight 1 — Broad nhiều click nhưng chất lượng truy cập chưa tương xứng"
+            "Insight 1 — Broad tạo nhiều Click nhưng chưa chuyển thành traffic chất lượng tương xứng"
           }
         </h3>
         <ul>
+          <li>{"Tạo 1.700 Link Click, cao nhất trong ba nhóm."}</li>
+          <li>{"Tuy nhiên, chỉ 52% số click chuyển thành LPV."}</li>
+          <li>{"Cost/LPV đạt 3.394đ, cao nhất trong ba nhóm."}</li>
+          <li>{"ATC/LPV chỉ 3,5%."}</li>
+        </ul>
+        <p>
+          {
+            "Rationale: Broad đang tạo ra nhiều lượt click nhưng tỷ lệ người thực sự vào trang đích và tiếp tục quan tâm sản phẩm chưa tốt. Tuy nhiên, không nên cắt toàn bộ ngân sách vì đây là nhóm phục vụ việc mở rộng khách hàng mới."
+          }
+        </p>
+        <p>
+          {
+            "Giả thuyết cần kiểm tra: chất lượng placement, tốc độ tải trang, sự phù hợp giữa quảng cáo và trang đích, cũng như độ chính xác của tracking."
+          }
+        </p>
+        <h3>
+          {
+            "Insight 2 — Lookalike là ứng viên phù hợp nhất để mở rộng ngân sách"
+          }
+        </h3>
+        <ul>
+          <li>{"Cost/LPV thấp nhất, khoảng 3.175đ."}</li>
+          <li>{"LPV Rate 70%, cao hơn Broad đáng kể."}</li>
           <li>
             {
-              "1.700 Link Click, cao nhất trong ba nhóm, nhưng LPV Rate chỉ đạt 52%."
+              "ATC/LPV 5,5%, cho thấy khách truy cập có xu hướng quan tâm sản phẩm cao hơn Broad."
             }
           </li>
-          <li>{"Cost/LPV 3.394đ và ATC/LPV 3,5%, đều kém hơn Lookalike."}</li>
           <li>
             {
-              "Không nên loại bỏ Broad hoàn toàn vì nhóm này còn có vai trò tìm khách hàng mới."
+              "Frequency 2,4, chưa cho thấy dấu hiệu rõ ràng của việc tiếp cận lặp lại quá mức."
             }
           </li>
         </ul>
         <p>
           {
-            "Rationale: Cần kiểm tra placement, thời gian tải trang mobile, độ khớp quảng cáo–trang đích và tracking; không được khẳng định nguyên nhân chỉ từ LPV Rate."
+            "Rationale: Lookalike hiện có sự cân bằng tốt giữa chi phí truy cập và chất lượng traffic, đồng thời vẫn có vai trò thu hút khách hàng mới."
+          }
+        </p>
+        <p>
+          {
+            "Tuy nhiên, hiệu quả tốt khi chi 3 triệu đồng không đảm bảo giữ nguyên khi tăng ngân sách lên 4–5 triệu đồng."
           }
         </p>
         <h3>
-          {"Insight 2 — Lookalike là ứng viên hợp lý để mở rộng có kiểm soát"}
+          {
+            "Insight 3 — Retargeting có khả năng chuyển đổi tốt nhưng tiềm ẩn rủi ro khi tăng ngân sách"
+          }
         </h3>
         <ul>
-          <li>
-            {"Cost/LPV thấp nhất (3.175đ), LPV Rate 70% và ATC/LPV 5,5%."}
-          </li>
-          <li>
-            {"Frequency 2,4 chưa gợi ý rõ việc tiếp cận lặp lại quá mức."}
-          </li>
+          <li>{"CPA thấp nhất, khoảng 154.000đ."}</li>
+          <li>{"ATC/LPV cao nhất, khoảng 8%."}</li>
+          <li>{"Reach chỉ 12.000 và Frequency đã đạt 6,8."}</li>
           <li>
             {
-              "Chi phí hiệu quả ở mức chi 3 triệu không đảm bảo hiệu suất tương tự khi scale."
+              "Dữ liệu theo ngày cho thấy CPA cao hơn đáng kể ở những ngày cuối."
             }
           </li>
         </ul>
         <p>
           {
-            "Rationale: Ưu tiên Lookalike có thể bảo vệ được bằng dữ liệu, nhưng cần kiểm tra hiệu quả biên sau khi tăng ngân sách."
+            "Rationale: Retargeting đang khai thác nhóm đã có mức độ quan tâm cao, nhưng việc liên tục tăng ngân sách có thể khiến quảng cáo lặp lại nhiều lần trước cùng một nhóm người."
           }
         </p>
-        <h3>
-          {"Insight 3 — Retargeting chuyển đổi tốt nhưng có rủi ro về quy mô"}
-        </h3>
-        <ul>
-          <li>
-            {"CPA thấp nhất (khoảng 154.000đ); ATC/LPV cao nhất (xấp xỉ 8%)."}
-          </li>
-          <li>
-            {
-              "Reach 12.000 và Frequency 6,8 là tín hiệu cần kiểm tra mức độ lặp lại."
-            }
-          </li>
-          <li>
-            {
-              "Dữ liệu CPA cuối kỳ cao hơn đầu kỳ, nhưng số đơn từng ngày ít khiến chỉ số biến động mạnh."
-            }
-          </li>
-        </ul>
         <p>
           {
-            "Rationale: Có thể nghi ngờ Ad Fatigue/bão hòa tệp, chưa đủ chứng minh. Kiểm tra Reach, CTR, CPM, CVR và lượng người gia nhập tệp trước khi kết luận."
+            "Không thể kết luận chắc chắn tệp đã bão hòa chỉ từ Frequency và CPA. Cần kiểm tra thêm xu hướng Reach, CTR, CPM, CVR và lượng người mới gia nhập tệp."
           }
         </p>
       </section>
       <section className="card">
-        <h2>{"2. Ba scenario tối ưu đều có thể được chấp nhận"}</h2>
+        <h2>{"2. Ba scenarios tối ưu hợp lý"}</h2>
+        <p>{"Khuyến nghị tham khảo"}</p>
+        <h3>{"Scenario 1 — Balanced Growth"}</h3>
         <p>
           {
-            "Không có đáp án phân bổ cố định. Mỗi scenario là một chiến lược có mục tiêu và rủi ro khác nhau. Tỷ lệ ngân sách là minh họa trong phạm vi 8.000.000đ và cần được triển khai có kiểm soát."
+            "Ưu tiên mở rộng Lookalike nhưng vẫn duy trì Broad để tìm khách hàng mới và Retargeting để khai thác nhu cầu đã có."
           }
         </p>
-        <h3>{"Scenario 1 — Balanced Growth"}</h3>
         <div className="table-scroll">
           <table>
             <thead>
               <tr>
-                <th scope="col">{"Ad Set"}</th>
+                <th scope="col">{"Nhóm"}</th>
                 <th scope="col">{"Ngân sách"}</th>
                 <th scope="col">{"Tỷ trọng"}</th>
               </tr>
@@ -183,17 +194,17 @@ export default function TrainerAnswerKey() {
             <tbody>
               <tr>
                 <th scope="row">{"Broad"}</th>
-                <td>{"2.400.000đ"}</td>
+                <td>{"2,4 triệu"}</td>
                 <td>{"30%"}</td>
               </tr>
               <tr>
                 <th scope="row">{"Lookalike"}</th>
-                <td>{"4.000.000đ"}</td>
+                <td>{"4 triệu"}</td>
                 <td>{"50%"}</td>
               </tr>
               <tr>
                 <th scope="row">{"Retargeting"}</th>
-                <td>{"1.600.000đ"}</td>
+                <td>{"1,6 triệu"}</td>
                 <td>{"20%"}</td>
               </tr>
             </tbody>
@@ -201,43 +212,43 @@ export default function TrainerAnswerKey() {
         </div>
         <p>
           {
-            "Rationale: Lookalike cho thấy hiệu quả Cost/LPV và chất lượng traffic tốt; vẫn giữ Broad để tìm khách hàng mới. Giảm tỷ trọng Retargeting nhằm hạn chế rủi ro tiếp cận lặp lại khi Frequency cao."
+            "Rationale: Lookalike có hiệu quả traffic tốt nhất về Cost/LPV và tạo ra nhiều ATC hơn Broad. Broad được duy trì để tiếp tục tìm khách hàng mới, nhưng giảm tỷ trọng khi chất lượng truy cập còn hạn chế. Retargeting giảm nhẹ ngân sách nhằm kiểm soát Frequency và đánh giá khả năng bão hòa."
           }
         </p>
-        <p>{"Ba hành động tối ưu:"}</p>
-        <ul>
+        <p>{"3 hành động ưu tiên:"}</p>
+        <ol>
           <li>
             {
-              "1. Tăng ngân sách Lookalike từng bước; theo dõi Cost/LPV và ATC/LPV."
+              "Tăng ngân sách Lookalike có kiểm soát, theo dõi Cost/LPV và ATC/LPV."
             }
           </li>
           <li>
             {
-              "2. Kiểm tra placement, tốc độ tải trang mobile và tracking của Broad để tìm nguyên nhân LPV Rate thấp."
+              "Kiểm tra placement, trang đích trên mobile và tracking của Broad để giải thích tỷ lệ LPV thấp."
             }
           </li>
           <li>
             {
-              "3. Làm mới creative Retargeting và kiểm tra Frequency, CTR, CPA trước khi scale."
+              "Thay creative Retargeting và theo dõi Frequency, CTR, CPA trước khi tiếp tục tăng ngân sách."
             }
           </li>
-        </ul>
+        </ol>
         <p>
           {
-            "Khi nào phù hợp: Doanh nghiệp muốn cân bằng tìm khách hàng mới và hiệu quả ngắn hạn."
-          }
-        </p>
-        <p>
-          {
-            "Rủi ro/câu hỏi phản biện: Không mặc định hiệu quả Lookalike giữ nguyên khi tăng chi tiêu; giảm Retargeting có thể bỏ lỡ một phần đơn hàng."
+            "Khi nào phù hợp: Doanh nghiệp muốn duy trì tăng trưởng khách hàng mới nhưng vẫn thận trọng về hiệu quả."
           }
         </p>
         <h3>{"Scenario 2 — Acquisition First"}</h3>
+        <p>
+          {
+            "Đặt ưu tiên cao hơn vào phát triển nguồn khách hàng mới và làm giàu tệp Retargeting cho các giai đoạn tiếp theo."
+          }
+        </p>
         <div className="table-scroll">
           <table>
             <thead>
               <tr>
-                <th scope="col">{"Ad Set"}</th>
+                <th scope="col">{"Nhóm"}</th>
                 <th scope="col">{"Ngân sách"}</th>
                 <th scope="col">{"Tỷ trọng"}</th>
               </tr>
@@ -245,17 +256,17 @@ export default function TrainerAnswerKey() {
             <tbody>
               <tr>
                 <th scope="row">{"Broad"}</th>
-                <td>{"3.200.000đ"}</td>
+                <td>{"3,2 triệu"}</td>
                 <td>{"40%"}</td>
               </tr>
               <tr>
                 <th scope="row">{"Lookalike"}</th>
-                <td>{"3.200.000đ"}</td>
+                <td>{"3,2 triệu"}</td>
                 <td>{"40%"}</td>
               </tr>
               <tr>
                 <th scope="row">{"Retargeting"}</th>
-                <td>{"1.600.000đ"}</td>
+                <td>{"1,6 triệu"}</td>
                 <td>{"20%"}</td>
               </tr>
             </tbody>
@@ -263,43 +274,43 @@ export default function TrainerAnswerKey() {
         </div>
         <p>
           {
-            "Rationale: Ưu tiên phát triển nguồn khách hàng mới, kể cả Broad đang kém hơn. Chỉ hợp lý nếu đi kèm thử nghiệm cải thiện traffic, không đơn thuần giữ nguyên cách chạy."
+            "Rationale: Mặc dù Broad có hiệu suất hiện tại kém hơn, doanh nghiệp đang ở giai đoạn xây dựng nhận diện và cần liên tục tiếp cận khách hàng mới. Giữ ngân sách đáng kể cho Broad có thể hợp lý nếu đi kèm kế hoạch cải thiện chất lượng traffic, thay vì tiếp tục chạy như cũ."
           }
         </p>
-        <p>{"Ba hành động tối ưu:"}</p>
-        <ul>
+        <p>{"3 hành động ưu tiên:"}</p>
+        <ol>
           <li>
             {
-              "1. Thử creative mới cho Broad, tập trung lợi ích cho da nhạy cảm."
+              "Thử nghiệm creative mới cho Broad, làm rõ lợi ích sản phẩm dành cho da nhạy cảm."
             }
           </li>
           <li>
             {
-              "2. Kiểm tra landing page mobile, Link Click→LPV, cân nhắc tối ưu LPV nếu phù hợp điều kiện đo lường."
+              "Kiểm tra và tối ưu trải nghiệm landing page trên mobile, đồng thời cân nhắc tối ưu theo LPV nếu chưa thực hiện."
             }
           </li>
           <li>
             {
-              "3. Dùng Lookalike làm nhóm tham chiếu; so sánh Cost/LPV và ATC/LPV với Broad sau thay đổi."
+              "Duy trì Lookalike làm nhóm tham chiếu hiệu quả và theo dõi chênh lệch Cost/LPV, ATC/LPV với Broad."
             }
           </li>
-        </ul>
+        </ol>
         <p>
           {
-            "Khi nào phù hợp: Doanh nghiệp chú trọng tăng quy mô khách hàng tiềm năng dài hạn và chấp nhận ngân sách thử nghiệm."
-          }
-        </p>
-        <p>
-          {
-            "Rủi ro/câu hỏi phản biện: Broad có thể tiếp tục mang lại traffic chất lượng thấp; phải có tiêu chí dừng thử nghiệm."
+            "Khi nào phù hợp: Doanh nghiệp ưu tiên phát triển tệp khách hàng mới dài hạn và chấp nhận dành một phần ngân sách để thử nghiệm."
           }
         </p>
         <h3>{"Scenario 3 — Conversion Support"}</h3>
+        <p>
+          {
+            "Ưu tiên khai thác nhu cầu hiện có nhiều hơn, nhưng vẫn giữ ngân sách tìm khách hàng mới."
+          }
+        </p>
         <div className="table-scroll">
           <table>
             <thead>
               <tr>
-                <th scope="col">{"Ad Set"}</th>
+                <th scope="col">{"Nhóm"}</th>
                 <th scope="col">{"Ngân sách"}</th>
                 <th scope="col">{"Tỷ trọng"}</th>
               </tr>
@@ -307,17 +318,17 @@ export default function TrainerAnswerKey() {
             <tbody>
               <tr>
                 <th scope="row">{"Broad"}</th>
-                <td>{"2.000.000đ"}</td>
+                <td>{"2 triệu"}</td>
                 <td>{"25%"}</td>
               </tr>
               <tr>
                 <th scope="row">{"Lookalike"}</th>
-                <td>{"3.600.000đ"}</td>
+                <td>{"3,6 triệu"}</td>
                 <td>{"45%"}</td>
               </tr>
               <tr>
                 <th scope="row">{"Retargeting"}</th>
-                <td>{"2.400.000đ"}</td>
+                <td>{"2,4 triệu"}</td>
                 <td>{"30%"}</td>
               </tr>
             </tbody>
@@ -325,46 +336,48 @@ export default function TrainerAnswerKey() {
         </div>
         <p>
           {
-            "Rationale: Retargeting có ATC/LPV, CPA tốt nhất nên có thể hỗ trợ chuyển đổi ngắn hạn. Đây là lựa chọn rủi ro cao hơn do Reach hạn chế, Frequency cao và CPA cuối kỳ xấu đi."
+            "Rationale: Retargeting có ATC/LPV và hiệu quả mua hàng tốt nhất. Doanh nghiệp có thể cân nhắc duy trì hoặc tăng nhẹ tỷ trọng để hỗ trợ doanh số ngắn hạn. Tuy nhiên, đây là lựa chọn rủi ro hơn vì Reach nhỏ và Frequency cao; cần kiểm tra khả năng mở rộng tệp trước khi triển khai."
           }
         </p>
-        <p>{"Ba hành động tối ưu:"}</p>
-        <ul>
-          <li>
-            {"1. Thay creative Retargeting, tránh lặp cùng một thông điệp."}
-          </li>
+        <p>{"3 hành động ưu tiên:"}</p>
+        <ol>
           <li>
             {
-              "2. Kiểm tra quy mô và tốc độ bổ sung người mới vào tệp ViewContent 30 ngày; chỉ tăng chi nếu đủ bằng chứng."
+              "Làm mới creative Retargeting, thử thông điệp khác với quảng cáo mà khách đã xem."
             }
           </li>
           <li>
             {
-              "3. Giữ Lookalike để bổ sung người mới, hạn chế phụ thuộc Retargeting."
+              "Kiểm tra quy mô và lượng người mới trong tệp ViewContent 30 ngày; chỉ tăng ngân sách khi dữ liệu ủng hộ."
             }
           </li>
-        </ul>
+          <li>
+            {
+              "Duy trì Lookalike để bổ sung nguồn khách hàng mới và tránh phụ thuộc hoàn toàn vào Retargeting."
+            }
+          </li>
+        </ol>
         <p>
           {
-            "Khi nào phù hợp: Doanh nghiệp ưu tiên hỗ trợ đơn hàng ngắn hạn và có thêm bằng chứng tệp Retargeting còn dư địa."
+            "Khi nào phù hợp: Doanh nghiệp chịu áp lực hỗ trợ đơn hàng ngắn hạn và có bằng chứng bổ sung rằng tệp Retargeting vẫn đủ dư địa."
           }
         </p>
         <p>
           {
-            "Rủi ro/câu hỏi phản biện: Tăng Retargeting chỉ vì CPA thấp nhất là lý do chưa đủ; cần bảo vệ giả định về quy mô tệp và hiệu quả biên."
+            "Lưu ý cho trainer: Nếu học viên đề xuất tăng Retargeting chỉ vì CPA thấp nhất mà không thảo luận rủi ro bão hòa, đó là lập luận chưa đạt."
           }
         </p>
       </section>
       <section className="card">
-        <h2>{"3. KPI và nguyên tắc điều chỉnh theo scenario"}</h2>
+        <h2>{"3. KPI và nguyên tắc điều chỉnh cho từng scenario"}</h2>
         <div className="table-scroll">
           <table>
             <thead>
               <tr>
                 <th scope="col">{"Tiêu chí"}</th>
-                <th scope="col">{"Balanced Growth"}</th>
-                <th scope="col">{"Acquisition First"}</th>
-                <th scope="col">{"Conversion Support"}</th>
+                <th scope="col">{"Scenario 1: Balanced"}</th>
+                <th scope="col">{"Scenario 2: Acquisition"}</th>
+                <th scope="col">{"Scenario 3: Conversion"}</th>
               </tr>
             </thead>
             <tbody>
@@ -381,28 +394,40 @@ export default function TrainerAnswerKey() {
                 <td>{"CPA"}</td>
               </tr>
               <tr>
-                <th scope="row">{"Rủi ro theo dõi"}</th>
-                <td>{"Frequency RT"}</td>
-                <td>{"Chất lượng Broad"}</td>
-                <td>{"Frequency + quy mô RT"}</td>
+                <th scope="row">{"Rủi ro cần theo dõi"}</th>
+                <td>{"Frequency của Retargeting"}</td>
+                <td>{"Chất lượng traffic Broad"}</td>
+                <td>{"Frequency và quy mô Retargeting"}</td>
               </tr>
               <tr>
-                <th scope="row">{"Khi cần xem xét"}</th>
-                <td>{"Hiệu quả LAL suy giảm khi scale"}</td>
-                <td>{"Broad vẫn kém sau thử nghiệm"}</td>
-                <td>{"RT tần suất tăng nhưng chuyển đổi không cải thiện"}</td>
+                <th scope="row">{"Quyết định cần xem xét"}</th>
+                <td>{"Dừng tăng ngân sách LAL nếu hiệu quả suy giảm"}</td>
+                <td>{"Giảm Broad nếu traffic vẫn kém sau tối ưu"}</td>
+                <td>
+                  {
+                    "Không tăng tiếp RT nếu Frequency tăng nhưng chuyển đổi không cải thiện"
+                  }
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
         <p>
           {
-            "Nguyên tắc: Không sử dụng một ngưỡng cứng cho mọi Ad Set. Quan sát nhiều chỉ số cùng lúc, đủ thời gian và khối lượng dữ liệu; phân biệt điều kiện kiểm tra với bằng chứng nhân quả."
+            "Các điều kiện điều chỉnh cần được học viên giải thích từ dữ liệu; không nhất thiết áp dụng một ngưỡng cứng cho tất cả nhóm quảng cáo."
           }
         </p>
+        <p>{"Ví dụ về một nguyên tắc tương đối tốt:"}</p>
+        <blockquote>
+          <p>
+            {
+              "Nếu sau 3–4 ngày tăng ngân sách Lookalike, Cost/LPV tăng rõ so với giai đoạn trước, đồng thời ATC/LPV giảm, tôi sẽ tạm dừng tăng ngân sách, kiểm tra chất lượng traffic theo placement và creative trước khi điều chỉnh tiếp."
+            }
+          </p>
+        </blockquote>
         <p>
           {
-            "Ví dụ monitoring plan: Nếu sau 3–4 ngày tăng ngân sách Lookalike, Cost/LPV tăng rõ so với giai đoạn trước và ATC/LPV cùng giảm, tạm dừng mở rộng để kiểm tra theo placement, creative, trang đích và tracking trước khi điều chỉnh tiếp."
+            "Đây là cách tốt hơn việc viết chung chung “theo dõi CPC, CPA và tối ưu khi chỉ số xấu”."
           }
         </p>
       </section>

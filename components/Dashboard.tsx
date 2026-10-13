@@ -43,7 +43,7 @@ export default function Dashboard() {
     ),
   }));
   return (
-    <>
+    <div className="campaign-dataset">
       <div className="kpis">
         {[
           ["Chi tiêu 7 ngày", money(overall.spend), "Ngân sách đã sử dụng"],
@@ -255,6 +255,6 @@ export default function Dashboard() {
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 }
