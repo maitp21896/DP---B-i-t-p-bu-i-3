@@ -92,9 +92,8 @@ export default function FinalSubmission({
       <span className="eyebrow">HOÀN TẤT BÀI TẬP</span>
       <h2>Nộp đề xuất cuối cùng</h2>
       <p>
-        Đánh giá mô phỏng và lưu bản nháp chưa gửi bài cho giảng viên. Kiểm tra
-        báo cáo trước khi nộp; bài đã gửi sẽ được khóa để bảo toàn phiên bản
-        cuối.
+        Kiểm tra tóm tắt trước khi nộp. Bài đã gửi sẽ được khóa. Mốc 20 phút chỉ
+        để nhắc thời gian; bạn vẫn có thể nộp bài bình thường.
       </p>
       {s.pendingSubmission ? (
         <p className="notice">

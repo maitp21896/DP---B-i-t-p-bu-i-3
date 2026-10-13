@@ -2,7 +2,7 @@
 
 ## Cách dùng
 
-Trainer mở link riêng → nhập mã lớp, ví dụ `DP27` → **Tải Excel tổng hợp**.
+Trainer mở link riêng → **Tải Excel tổng hợp**. Không cần nhập mã lớp. File gồm tất cả lớp và giữ cột mã lớp để trainer lọc trong Excel. Trang trainer cũng có đáp án gợi ý cho ba bài tập.
 
 File `.xlsx` có:
 
@@ -29,9 +29,9 @@ Nếu bạn tự đặt token, dùng link `https://TEN-WEBSITE/trainer#key=TOKEN
 
 ## Bài tập học viên
 
-Popup thông tin → case & dataset → Bài 1 ngân sách → Bài 2 tối ưu → Bài 3 KPI/điều kiện điều chỉnh → mô phỏng, sửa một lần nếu cần → nộp bản cuối. Nút Next kiểm tra câu trả lời của từng bài. Bản nháp cũ được chuyển sang luồng mới và giữ nguyên nội dung.
+Popup thông tin → case & dataset → Bài 1 ngân sách → Bài 2 tối ưu → Bài 3 KPI/điều kiện điều chỉnh → tóm tắt quyết định và câu trả lời, sửa một lần nếu cần → nộp bản cuối. Nút Next kiểm tra câu trả lời của từng bài. Bản nháp cũ được chuyển sang luồng mới và giữ nguyên nội dung.
 
-Chỉ bài được server xác nhận đã nộp mới có trong Excel. Nếu lớp chưa có bài, trainer nhận thông báo rõ ràng. Mỗi lần tải hỗ trợ tối đa 200 bài trong 90 ngày; file lớn hơn 4 MB sẽ báo giới hạn thay vì xuất thiếu dữ liệu. Nếu lớp cần nhiều hơn, chia mã lớp theo nhóm.
+Chỉ bài được server xác nhận đã nộp mới có trong Excel. Nếu chưa có bài, trainer nhận thông báo rõ ràng. Mỗi lần tải lấy dữ liệu mới nhất, tối đa 1.000 bài trong 90 ngày; file lớn hơn 4 MB sẽ báo giới hạn thay vì xuất thiếu dữ liệu. Mỗi bài nộp thành công được lưu ngay với thời điểm nhận bài. Mốc 20 phút chỉ nhắc thời gian: không khóa nộp, không đánh dấu muộn, không tự trừ điểm.
 
 ## Bảo vệ dữ liệu
 
@@ -41,6 +41,6 @@ Muốn thu hồi link, đổi `TRAINER_EXPORT_TOKEN` trong Vercel, redeploy và 
 
 ## Kiểm chứng
 
-Bản cập nhật đã pass production build, TypeScript, 15 unit tests và 7 Chromium browser tests. Kiểm thử thật dùng một bài mẫu có hai phiên bản: POST vào app trả 201, xuất Excel bằng khóa đúng trả 200, không có khóa trả 403; file mở/đọc được bằng ExcelJS và giữ nguyên lập luận, ngân sách cuối và lịch sử. Bài mẫu đã được xóa. Khóa xuất file không xuất hiện trong browser bundle.
+Các phiên bản trước đã được kiểm tra production build, TypeScript, unit tests và Chromium browser tests. Kiểm thử thật dùng một bài mẫu có hai phiên bản: POST vào app trả 201, xuất Excel bằng khóa đúng trả 200, không có khóa trả 403; file mở/đọc được bằng ExcelJS và giữ nguyên lập luận, ngân sách cuối và lịch sử. Bài mẫu đã được xóa. Khóa xuất file không xuất hiện trong browser bundle.
 
 Các bài test browser có response mô phỏng để kiểm tra UX retry và tải file; kiểm thử Supabase/XLSX thật được thực hiện riêng. Chưa xác nhận bản cập nhật mới trên Vercel production. Safari/WebKit vẫn chưa được kiểm chứng.

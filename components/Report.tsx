@@ -5,7 +5,6 @@ import { Identity } from "@/lib/submissions/schema";
 import { Decision } from "@/types/campaign";
 import { ids, money, shortNames } from "@/lib/metrics";
 import { actions } from "@/lib/actions";
-import { evaluate } from "@/lib/simulation";
 export default function Report({
   d,
   identity,
@@ -109,15 +108,11 @@ export default function Report({
               <strong>{d.monitors.join(" · ")}</strong>
             </p>
             <p className="preserve">{d.rule}</p>
-            <h3>06 / Rủi ro & khoảng trống bằng chứng</h3>
-            {evaluate(d).risks.map((r) => (
-              <p key={r}>{r}</p>
-            ))}
           </section>
         </div>
         <footer>
-          Đánh giá phục vụ học tập, không dự báo kết quả Meta Ads. Purchase/CPA
-          là chỉ số bổ trợ. Lập luận cần giảng viên xem xét.
+          Bản tóm tắt quyết định và câu trả lời của học viên · Tomorrow
+          Marketers
         </footer>
       </article>
     </>
