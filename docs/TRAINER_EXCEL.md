@@ -11,3 +11,5 @@ Every successful submission is stored immediately with its receipt timestamp. Ea
 The workbook includes **Tong hop lop**, **Lich su va phan hoi**, and **Huong dan**. Class codes remain available as an Excel filter. Original text is stored literally, not as executable formulas. Exports cover the last 90 days, with limits of 1,000 records and 4 MB; oversized exports return an error rather than silently omitting rows.
 
 Vercel requires the existing Supabase URL and service-role key. `TRAINER_EXPORT_TOKEN` is no longer used and can be removed from Vercel. Old links containing `#key=...` still open the same public page.
+
+Students may navigate back and forth, revise repeatedly, and submit new attempts after earlier submissions. Each successful attempt has its own receipt ID and remains available to the trainer. Retry of the same pending request does not duplicate that attempt. Draft previews retain the initial and latest decision, so intermediate edits do not accumulate an unbounded upload payload.
