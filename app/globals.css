@@ -1790,3 +1790,18 @@ button:not(.secondary):not(.text-button):not(.nav):not(.progress > button):not(
 .trainer-sheet-actions [role="status"] {
   flex-basis: 100%;
 }
+
+.trainer-answer-key h3 {
+  margin: 28px 0 12px;
+}
+.trainer-answer-key ul {
+  padding-left: 24px;
+  margin: 12px 0 20px;
+}
+.trainer-answer-key li {
+  margin-bottom: 8px;
+  line-height: 1.65;
+}
+.trainer-answer-key .table-scroll {
+  margin: 18px 0 24px;
+}
