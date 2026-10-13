@@ -1,6 +1,10 @@
+# Lưu trữ Supabase (phần backend)
+
+**Trainer nay dùng [link tải Excel](TRAINER_EXCEL.md), không cần vào Supabase.** Phần Table Editor bên dưới chỉ dành cho quản trị khi kiểm tra dữ liệu.
+
 # Thiết lập đơn giản: nộp bài → lưu Supabase → xem kết quả
 
-Không cần tạo tài khoản học viên, tài khoản trainer hoặc cấp quyền trainer trong app. Trainer dùng tài khoản quản lý dự án Supabase đã có để xem bảng kết quả.
+Không cần tài khoản học viên hoặc tài khoản trainer. Backend tiếp tục lưu Supabase; trainer tải Excel bằng link riêng.
 
 ## Bước 1 — Tạo nơi lưu kết quả
 

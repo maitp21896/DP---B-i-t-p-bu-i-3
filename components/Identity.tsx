@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState, useEffect, useRef } from "react";
 import { Session } from "@/types/campaign";
 import { identitySchema } from "@/lib/submissions/schema";
 export default function IdentityForm({
@@ -15,7 +15,7 @@ export default function IdentityForm({
   return (
     <section className="card identity-card" id="student-info">
       <span className="eyebrow">TRƯỚC KHI BẮT ĐẦU</span>
-      <h2>Thông tin học viên</h2>
+      <h2 id="identity-title">Thông tin học viên</h2>
       <p>
         Họ tên và mã lớp giúp giảng viên nhận diện bài nộp. Không cần tạo tài
         khoản. Bản nháp lưu trên thiết bị; khi bạn nộp, thông tin và đề xuất
@@ -37,6 +37,7 @@ export default function IdentityForm({
           <label>
             Họ và tên
             <input
+              autoFocus
               autoComplete="name"
               disabled={!!s.delivery || !!s.pendingSubmission}
               required
@@ -88,5 +89,53 @@ export default function IdentityForm({
         </div>
       </form>
     </section>
+  );
+}
+
+export function IdentityDialog({
+  s,
+  set,
+  start,
+  close,
+}: {
+  s: Session;
+  set: Dispatch<SetStateAction<Session>>;
+  start: () => void;
+  close: () => void;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const dialog = ref.current;
+    dialog?.showModal();
+    dialog?.querySelector<HTMLInputElement>("input")?.focus();
+    return () => dialog?.close();
+  }, []);
+  return (
+    <dialog
+      ref={ref}
+      className="identity-dialog no-print"
+      aria-labelledby="identity-title"
+      onCancel={(e) => {
+        e.preventDefault();
+        close();
+      }}
+    >
+      <button
+        type="button"
+        className="text-button identity-close"
+        aria-label="Đóng thông tin học viên"
+        onClick={close}
+      >
+        ✕
+      </button>
+      <IdentityForm s={s} set={set} start={start} />
+      <button
+        type="button"
+        className="text-button identity-later"
+        onClick={close}
+      >
+        Để sau · quay lại đọc yêu cầu
+      </button>
+    </dialog>
   );
 }

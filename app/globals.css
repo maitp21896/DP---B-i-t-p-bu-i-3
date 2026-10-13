@@ -1464,3 +1464,79 @@ details p {
     display: none !important;
   }
 }
+.identity-dialog {
+  border: 0;
+  border-radius: 14px;
+  padding: 28px;
+  width: calc(100% - 32px);
+  max-width: 680px;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  color: var(--navy);
+  box-shadow: 0 24px 90px #132b3655;
+}
+.identity-dialog::backdrop {
+  background: #102630aa;
+}
+.identity-dialog .identity-card {
+  padding: 10px 0 0;
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+.identity-dialog .identity-card h2 {
+  font-size: 25px;
+  margin: 10px 0;
+}
+.identity-close {
+  display: block;
+  margin: 0 0 0 auto;
+  font-size: 18px;
+  padding: 3px 9px;
+}
+.identity-later {
+  font-size: 11px;
+  margin-top: 10px;
+}
+.identity-dialog .bottom-actions {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.identity-dialog .bottom-actions small {
+  max-width: 290px;
+}
+.identity-dialog .identity-grid {
+  grid-template-columns: 2fr 1fr;
+}
+@media (max-width: 570px) {
+  .identity-dialog {
+    padding: 20px;
+  }
+  .identity-dialog .identity-grid {
+    grid-template-columns: 1fr;
+  }
+  .identity-dialog .bottom-actions button {
+    width: 100%;
+  }
+}
+@media (max-width: 850px) {
+  .sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .nav {
+    width: 100%;
+  }
+  .nav span {
+    overflow-wrap: anywhere;
+  }
+}
+@media (max-width: 570px) {
+  .progress {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .nav span {
+    font-size: 10px;
+  }
+}
