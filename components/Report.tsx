@@ -1,17 +1,26 @@
 "use client";
 import { useState } from "react";
+import { Identity } from "@/lib/submissions/schema";
 import { Decision } from "@/types/campaign";
 import { ids, money, shortNames } from "@/lib/metrics";
 import { actions } from "@/lib/actions";
 import { evaluate } from "@/lib/simulation";
-export function summary(d: Decision) {
-  return `GLOW NATURE — ĐỀ XUẤT TỐI ƯU CHIẾN DỊCH\nMục tiêu: Traffic | Ngân sách 7 ngày: 8.000.000 ₫\n\nPHÂN BỔ\n${ids.map((id) => `${shortNames[id]}: ${money(d.budgets[id])} (${((d.budgets[id] / 8000000) * 100).toFixed(1)}%)`).join("\n")}\n\nPHÁT HIỆN\n${d.evidence.map((e) => `${e.kind === "observation" ? "Quan sát" : "Giả thuyết"}: ${e.text}`).join("\n")}\n\nHÀNH ĐỘNG\n${d.actions.map((a) => `${actions.find((x) => x.id === a.id)?.label} — ${a.target === "all" ? "Toàn chiến dịch" : shortNames[a.target]}`).join("\n")}\n\nLẬP LUẬN\n${d.rationale}\n\nTHEO DÕI\n${d.monitors.join(", ")}\n${d.rule}\n\nRỦI RO\n${evaluate(d).risks.join("\n")}`;
+export function summary(d: Decision, identity?: Identity, reference?: string) {
+  return `GLOW NATURE — ĐỀ XUẤT TỐI ƯU CHIẾN DỊCH\n${identity ? `Học viên: ${identity.studentName} | Mã lớp: ${identity.classCode}\n` : ""}${reference ? `Mã bài nộp: ${reference}\n` : ""}Mục tiêu: Traffic | Ngân sách 7 ngày: 8.000.000 ₫\n\nPHÂN BỔ\n${ids.map((id) => `${shortNames[id]}: ${money(d.budgets[id])} (${((d.budgets[id] / 8000000) * 100).toFixed(1)}%)`).join("\n")}\n\nPHÁT HIỆN\n${d.evidence.map((e) => `${e.kind === "observation" ? "Quan sát" : "Giả thuyết"}: ${e.text}`).join("\n")}\n\nHÀNH ĐỘNG\n${d.actions.map((a) => `${actions.find((x) => x.id === a.id)?.label} — ${a.target === "all" ? "Toàn chiến dịch" : shortNames[a.target]}`).join("\n")}\n\nLẬP LUẬN\n${d.rationale}\n\nTHEO DÕI\n${d.monitors.join(", ")}\n${d.rule}\n\nRỦI RO\n${evaluate(d).risks.join("\n")}`;
 }
-export default function Report({ d }: { d: Decision }) {
+export default function Report({
+  d,
+  identity,
+  reference,
+}: {
+  d: Decision;
+  identity?: Identity;
+  reference?: string;
+}) {
   const [copy, setCopy] = useState("");
   async function copyText() {
     try {
-      await navigator.clipboard.writeText(summary(d));
+      await navigator.clipboard.writeText(summary(d, identity, reference));
       setCopy("Đã sao chép");
     } catch {
       setCopy("Không thể truy cập clipboard. Dùng Tải bản tóm tắt.");
@@ -19,7 +28,9 @@ export default function Report({ d }: { d: Decision }) {
   }
   function download() {
     const url = URL.createObjectURL(
-      new Blob([summary(d)], { type: "text/plain;charset=utf-8" }),
+      new Blob([summary(d, identity, reference)], {
+        type: "text/plain;charset=utf-8",
+      }),
     );
     const a = document.createElement("a");
     a.href = url;
@@ -52,6 +63,13 @@ export default function Report({ d }: { d: Decision }) {
           </div>
           <span className="badge">Bản đề xuất học viên</span>
         </header>
+        {identity && (
+          <div className="report-identity">
+            <strong>Học viên: {identity.studentName}</strong>
+            <span>Mã lớp: {identity.classCode}</span>
+            {reference && <span>Mã bài: {reference}</span>}
+          </div>
+        )}
         <div className="report-grid">
           <section>
             <h3>01 / Phân bổ ngân sách</h3>

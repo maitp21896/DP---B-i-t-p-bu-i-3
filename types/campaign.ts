@@ -22,4 +22,27 @@ export type Session = Decision & {
   started: number;
   timer: boolean;
   submissions: Decision[];
+  identity: { studentName: string; classCode: string };
+  sessionId: string;
+  receiptToken: string;
+  delivery: DeliveryReceipt | null;
+  pendingSubmission: import("@/lib/submissions/schema").SubmissionInput | null;
+};
+export type DeliveryReceipt = {
+  id: string;
+  submittedAt: string;
+  status: "submitted";
+};
+export type StoredSubmission = {
+  id: string;
+  student_name: string;
+  class_code: string;
+  submitted_at: string;
+  status: "submitted";
+  versions: Decision[];
+  final_proposal: Decision;
+  final_version: number;
+  final_score: number;
+  feedback: ReturnType<typeof import("@/lib/simulation").evaluate>[];
+  data_version: string;
 };

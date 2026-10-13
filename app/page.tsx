@@ -13,6 +13,10 @@ import {
 import Dashboard from "@/components/Dashboard";
 import Decisions, { EvidenceBoard } from "@/components/Decisions";
 import Report from "@/components/Report";
+import IdentityForm from "@/components/Identity";
+import FinalSubmission from "@/components/FinalSubmission";
+import { Assignment, AssignmentDialog } from "@/components/Assignment";
+import { identitySchema } from "@/lib/submissions/schema";
 import { useSession } from "@/store/session";
 import { evaluate, validate } from "@/lib/simulation";
 import { Decision } from "@/types/campaign";
@@ -35,6 +39,7 @@ export default function Home() {
   const [errors, setErrors] = useState<string[]>([]);
   const [now, setNow] = useState(Date.now());
   const [confirmReset, setConfirmReset] = useState(false);
+  const [showAssignment, setShowAssignment] = useState(false);
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
@@ -61,7 +66,19 @@ export default function Home() {
     }
   }
   function go(stage: number) {
-    set({ ...s, stage });
+    if (stage > 0 && !identitySchema.safeParse(s.identity).success) {
+      document
+        .getElementById("student-info")
+        ?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    if (stage === 2 && (s.delivery || s.pendingSubmission)) return;
+    const identity = identitySchema.safeParse(s.identity);
+    set({
+      ...s,
+      stage,
+      ...(identity.success ? { identity: identity.data } : {}),
+    });
     setErrors([]);
     window.scrollTo(0, 0);
   }
@@ -86,7 +103,11 @@ export default function Home() {
                 className={s.stage === i ? "nav active" : "nav"}
                 disabled={
                   (i === 3 && !submitted) ||
-                  (i === 2 && s.submissions.length === 2)
+                  (i > 0 && !identitySchema.safeParse(s.identity).success) ||
+                  (i === 2 &&
+                    (s.submissions.length === 2 ||
+                      !!s.delivery ||
+                      !!s.pendingSubmission))
                 }
                 onClick={() => go(i)}
               >
@@ -115,10 +136,16 @@ export default function Home() {
       <div className="main-area">
         <header className="topbar no-print">
           <div>
-            <span className="breadcrumb">Campaign Lab / Glow Nature</span>
+            <span className="breadcrumb">Tomorrow Marketers / Glow Nature</span>
             <span className="badge">Traffic · Meta Ads</span>
           </div>
           <div className="top-actions">
+            <button
+              className="secondary assignment-link"
+              onClick={() => setShowAssignment(true)}
+            >
+              Xem lại yêu cầu bài tập
+            </button>
             <button
               className="text-button"
               onClick={() => set({ ...s, timer: !s.timer })}
@@ -204,8 +231,14 @@ export default function Home() {
                     Nhiệm vụ: đọc dữ liệu, cân nhắc đánh đổi và đưa ra đề xuất
                     tối ưu có thể kiểm chứng.
                   </p>
-                  <button onClick={() => go(1)}>
-                    Khám phá chiến dịch <ArrowRight size={17} />
+                  <button
+                    onClick={() =>
+                      document
+                        .getElementById("student-info")
+                        ?.scrollIntoView({ behavior: "smooth" })
+                    }
+                  >
+                    Bắt đầu bài tập <ArrowRight size={17} />
                   </button>
                 </div>
                 <div className="brief-stats">
@@ -217,6 +250,10 @@ export default function Home() {
                   </div>
                 </div>
               </section>
+              <div className="card">
+                <Assignment />
+              </div>
+              <IdentityForm s={s} set={set} start={() => go(1)} />
               <div className="scenario-grid">
                 {[
                   {
@@ -257,8 +294,8 @@ export default function Home() {
                   điều chỉnh một lần sau đánh giá.
                 </p>
                 <p className="caption">
-                  Không đăng nhập · Không thu thập dữ liệu cá nhân · Tiến độ lưu
-                  trên trình duyệt này
+                  Không cần tài khoản học viên · Lưu bản nháp trên trình duyệt ·
+                  Nộp bài riêng cho giảng viên
                 </p>
               </section>
             </>
@@ -270,7 +307,11 @@ export default function Home() {
               <div className="bottom-actions">
                 <p>Quan sát là bằng chứng. Nguyên nhân vẫn cần kiểm chứng.</p>
                 <button
-                  disabled={s.submissions.length === 2}
+                  disabled={
+                    s.submissions.length === 2 ||
+                    !!s.delivery ||
+                    !!s.pendingSubmission
+                  }
                   onClick={() => go(2)}
                 >
                   Lập chiến lược <ArrowRight size={17} />
@@ -318,12 +359,20 @@ export default function Home() {
                       Ads.
                     </p>
                   </div>
-                  {s.submissions.length === 1 ? (
+                  {s.submissions.length === 1 &&
+                  !s.delivery &&
+                  !s.pendingSubmission ? (
                     <button className="secondary" onClick={() => go(2)}>
                       Điều chỉnh một lần
                     </button>
                   ) : (
-                    <span className="badge">Đã dùng lượt điều chỉnh</span>
+                    <span className="badge">
+                      {s.delivery
+                        ? "Đề xuất đã nộp"
+                        : s.pendingSubmission
+                          ? "Đang chờ xác nhận nộp"
+                          : "Đã dùng lượt điều chỉnh"}
+                    </span>
                   )}
                 </div>
                 <div className="assessment-grid">
@@ -440,7 +489,12 @@ export default function Home() {
                   </div>
                 </section>
               )}
-              <Report d={submitted} />
+              <FinalSubmission s={s} set={set} />
+              <Report
+                d={submitted}
+                identity={s.identity}
+                reference={s.delivery?.id}
+              />
             </>
           )}
         </main>
@@ -449,6 +503,9 @@ export default function Home() {
           <span>Tomorrow Marketers Academy · Học qua quyết định</span>
         </footer>
       </div>
+      {showAssignment && (
+        <AssignmentDialog close={() => setShowAssignment(false)} />
+      )}
       {confirmReset && (
         <div className="modal-backdrop no-print">
           <div
@@ -476,7 +533,8 @@ export default function Home() {
             <h2 id="reset-title">Bắt đầu lại bài tập?</h2>
             <p>
               Ngân sách, nhận xét, lập luận và đề xuất đã lưu trên trình duyệt
-              này sẽ được xóa.
+              này sẽ được xóa. Bài đã nộp trên máy chủ vẫn được giảng viên lưu;
+              để yêu cầu xóa, liên hệ giảng viên với mã tham chiếu.
             </p>
             <div className="bottom-actions">
               <button
