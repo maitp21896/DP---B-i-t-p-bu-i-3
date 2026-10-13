@@ -121,7 +121,7 @@ export default function Home() {
             <Leaf size={23} />
           </span>
           <span>
-            glow nature<small>CAMPAIGN LAB</small>
+            glow nature<small>META PRACTICE</small>
           </span>
         </a>
         <div className="workspace-label">KHÔNG GIAN HỌC TẬP</div>
@@ -203,11 +203,11 @@ export default function Home() {
         <main>
           <div className="page-title no-print">
             <div>
-              <span className="eyebrow">CHIẾN DỊCH 01 / GLOW NATURE</span>
+              <span className="eyebrow exercise-name">Bài tập thực hành Meta Consideration &amp; Conversion Optimization</span>
               <h1>
                 {
                   [
-                    "Chào mừng đến Campaign Lab.",
+                    "Bài tập thực hành Meta Consideration & Conversion Optimization",
                     "Bối cảnh case & dữ liệu chiến dịch",
                     "Bài 1 · Phân bổ ngân sách",
                     "Bài 2 · Đề xuất hành động tối ưu",
@@ -263,92 +263,41 @@ export default function Home() {
             </section>
           )}
           {s.stage === 1 && (
-            <>
-              <section className="brief-hero card">
+            <section className="case-brief card">
+              <h2>Case Glow Nature</h2>
+              <p>
+                Bạn là Performance Marketer của Glow Nature, thương hiệu chăm sóc
+                da hữu cơ cho da nhạy cảm, bán qua website. Dựa trên dữ liệu
+                <strong> 7 ngày chạy Meta Ads</strong>, hãy đề xuất tối ưu cho
+                tuần tiếp theo với ngân sách <strong>8.000.000 ₫</strong>.
+              </p>
+              <dl className="case-audiences">
                 <div>
-                  <span className="eyebrow">
-                    VAI TRÒ CỦA BẠN · PERFORMANCE MARKETER
-                  </span>
-                  <h2>
-                    Traffic tốt hôm nay.
-                    <br />
-                    Nền tảng tăng trưởng ngày mai.
-                  </h2>
-                  <p>
-                    Glow Nature bán sản phẩm chăm sóc da hữu cơ cho da nhạy cảm
-                    qua website. Sau 7 ngày chạy Meta Ads, quản lý giao bạn ngân
-                    sách <strong>8.000.000 ₫</strong> cho tuần tiếp theo.
-                  </p>
-                  <p>
-                    Nhiệm vụ: đọc dữ liệu, cân nhắc đánh đổi và đưa ra đề xuất
-                    tối ưu có thể kiểm chứng.
-                  </p>
-                  <span className="badge">
-                    Học viên: {s.identity.studentName} · {s.identity.classCode}
-                  </span>
+                  <dt>Ad Set A · Broad</dt>
+                  <dd>Nữ 25–40 tại Hà Nội và TP.HCM, không giới hạn sở thích.</dd>
                 </div>
-                <div className="brief-stats">
-                  <Leaf size={44} />
-                  <strong>08 triệu</strong>
-                  <span>NGÂN SÁCH TUẦN TIẾP THEO</span>
-                  <div>
-                    <b>3</b> Ad Set <b>7</b> ngày <b>20</b> phút
-                  </div>
+                <div>
+                  <dt>Ad Set B · Lookalike 1%</dt>
+                  <dd>Tương tự người mua trong 180 ngày; giới hạn địa lý và tuổi phù hợp.</dd>
                 </div>
-              </section>
-
-              <div className="scenario-grid">
-                {[
-                  {
-                    name: "Broad",
-                    tag: "Tiếp cận người mới",
-                    text: "Nữ 25–40 tại Hà Nội & TP.HCM, không giới hạn sở thích.",
-                  },
-                  {
-                    name: "Lookalike 1%",
-                    tag: "Mở rộng tệp khách hàng",
-                    text: "Tương tự nhóm đã mua trong 180 ngày; giới hạn địa lý và tuổi phù hợp.",
-                  },
-                  {
-                    name: "Retargeting",
-                    tag: "Kết nối lại người quan tâm",
-                    text: "Xem trang sản phẩm trong 30 ngày; loại trừ người đã mua.",
-                  },
-                ].map((a, i) => (
-                  <section className="card" key={a.name}>
-                    <span className="eyebrow">AD SET {["A", "B", "C"][i]}</span>
-                    <h2>{a.name}</h2>
-                    <span className="badge">{a.tag}</span>
-                    <p>{a.text}</p>
-                  </section>
-                ))}
-              </div>
-              <div className="notice">
-                <strong>Giữ đúng mục tiêu Traffic.</strong> Ưu tiên chất lượng
-                truy cập, mở rộng người mới và tín hiệu retargeting. Purchase và
-                CPA là chỉ số chẩn đoán. Giả định đã cấu hình loại trừ để giảm
-                overlap.
-              </div>
-              <section className="card">
-                <h2>Đầu ra của bạn</h2>
-                <p>
-                  Một đề xuất gồm ngân sách, tối đa 3 phát hiện, tối đa 3 hành
-                  động, lập luận của bạn, kế hoạch theo dõi và rủi ro. Bạn được
-                  điều chỉnh một lần sau đánh giá.
-                </p>
-                <p className="caption">
-                  Không cần tài khoản học viên · Lưu bản nháp trên trình duyệt ·
-                  Nộp bài riêng cho giảng viên
-                </p>
-              </section>
-            </>
+                <div>
+                  <dt>Ad Set C · Retargeting</dt>
+                  <dd>Người xem trang sản phẩm trong 30 ngày, loại trừ người đã mua.</dd>
+                </div>
+              </dl>
+              <p className="case-objective">
+                <strong>Mục tiêu chiến dịch hiện tại: Traffic.</strong> Đánh giá
+                chất lượng truy cập và tín hiệu chuyển đổi; Purchase và CPA là
+                chỉ số chẩn đoán. Giả định các tệp đã được loại trừ để giảm trùng lặp.
+              </p>
+            </section>
           )}
           {s.stage === 1 && (
             <>
               <Dashboard />
               <EvidenceBoard s={s} set={set} />
               <div className="bottom-actions">
-                <p>Quan sát là bằng chứng. Nguyên nhân vẫn cần kiểm chứng.</p>
+                <p>Tiếp tục để phân bổ ngân sách cho tuần tới.</p>
                 <button
                   disabled={
                     s.submissions.length === 2 ||
@@ -566,7 +515,7 @@ export default function Home() {
           )}
         </main>
         <footer className="app-footer no-print">
-          Glow Nature Campaign Lab{" "}
+          Glow Nature · Meta Consideration & Conversion Optimization{" "}
           <span>Tomorrow Marketers Academy · Học qua quyết định</span>
         </footer>
       </div>
