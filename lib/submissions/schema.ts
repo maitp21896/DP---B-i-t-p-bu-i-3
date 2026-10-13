@@ -51,7 +51,6 @@ export const decisionSchema = z
           })
           .strict(),
       )
-      .min(1)
       .max(3),
     monitors: z.array(z.string().max(40)).min(2).max(3),
     rule: z.string().min(40).max(2000),

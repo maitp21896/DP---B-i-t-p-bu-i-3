@@ -93,8 +93,8 @@ test("raising a fully allocated slider transfers funds and decreasing releases t
   const all = clampBudget(lowered, "rt", 8000000);
   assert.deepEqual(all, { broad: 0, lal: 0, rt: 8000000 });
 });
-test("submission requires rationale, budget, evidence and monitoring", () => {
-  const d = proposal();
+test("submission requires explanation, budget and monitoring", () => {
+  const d = { ...proposal(), evidence: [] };
   assert.deepEqual(validate(d), []);
   assert.ok(validate({ ...d, rationale: "ok" }).length);
   assert.ok(validate({ ...d, budgets: { ...d.budgets, rt: 0 } }).length);

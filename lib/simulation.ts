@@ -30,11 +30,10 @@ export function validate(d: Decision): string[] {
       "Hãy viết giải thích có dẫn chứng (ít nhất 80 ký tự và 15 từ); gợi ý 300–800 ký tự.",
     );
   if (
-    d.evidence.length < 1 ||
     d.evidence.length > 3 ||
     d.evidence.some((e) => e.text.trim().length < 15)
   )
-    errors.push("Ghi lại 1–3 nhận xét hoặc giả thuyết cụ thể.");
+    errors.push("Nhận xét đã lưu không hợp lệ.");
   if (
     d.monitors.length < 2 ||
     d.monitors.length > 3 ||

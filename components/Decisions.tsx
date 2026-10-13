@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Session, AdId } from "@/types/campaign";
 import {
   BUDGET,
@@ -10,82 +10,6 @@ import {
   shortNames,
 } from "@/lib/metrics";
 import { actions, monitorOptions } from "@/lib/actions";
-export function EvidenceBoard({
-  s,
-  set,
-}: {
-  s: Session;
-  set: Dispatch<SetStateAction<Session>>;
-}) {
-  const [text, setText] = useState("");
-  const [kind, setKind] = useState<"observation" | "hypothesis">("observation");
-  return (
-    <section className="card">
-      <div className="section-head">
-        <div>
-          <h2>Bảng bằng chứng</h2>
-          <p>
-            Ghi tối đa 3 ý của bạn. Phân biệt điều quan sát được và điều cần
-            kiểm chứng.
-          </p>
-        </div>
-        <span className="badge">{s.evidence.length}/3</span>
-      </div>
-      {s.evidence.map((e, i) => (
-        <div className="evidence-row" key={i}>
-          <span className="badge">
-            {e.kind === "observation" ? "Quan sát" : "Giả thuyết"}
-          </span>
-          <p>{e.text}</p>
-          <button
-            className="text-button"
-            aria-label={`Xóa nhận xét ${i + 1}`}
-            onClick={() =>
-              set({ ...s, evidence: s.evidence.filter((_, j) => i !== j) })
-            }
-          >
-            Xóa
-          </button>
-        </div>
-      ))}
-      {s.evidence.length < 3 && (
-        <div className="evidence-input">
-          <label>
-            Loại nhận xét
-            <select
-              value={kind}
-              onChange={(e) => setKind(e.target.value as typeof kind)}
-            >
-              <option value="observation">Quan sát dữ liệu</option>
-              <option value="hypothesis">Giả thuyết cần kiểm chứng</option>
-            </select>
-          </label>
-          <label className="grow">
-            Nhận xét của bạn
-            <input
-              maxLength={1000}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Ghi số liệu, xu hướng và Ad Set liên quan…"
-            />
-          </label>
-          <button
-            disabled={text.trim().length < 15}
-            onClick={() => {
-              set({
-                ...s,
-                evidence: [...s.evidence, { text: text.trim(), kind }],
-              });
-              setText("");
-            }}
-          >
-            Lưu nhận xét
-          </button>
-        </div>
-      )}
-    </section>
-  );
-}
 export default function Decisions({
   s,
   set,
@@ -168,33 +92,22 @@ export default function Decisions({
                 </div>
               </div>
             ))}
-            <p className="caption">
-              Giảm một Ad Set trước khi tăng Ad Set khác nếu đã phân bổ hết ngân
-              sách.
-            </p>
           </section>
-          <EvidenceBoard s={s} set={set} />
           <section className="card">
-            <h2>Giải thích phân bổ ngân sách</h2>
-            <p>
-              Ad Set nào nên tăng, giảm hoặc giữ nguyên? Vì sao? Hãy dẫn chứng
-              bằng dữ liệu và nêu đánh đổi trong quyết định của bạn.
-            </p>
+            <h2>Giải thích</h2>
             <label>
-              Lập luận của bạn
+              Giải thích
               <textarea
-                aria-label="Lập luận của bạn"
-                rows={5}
+                aria-label="Giải thích"
+                rows={7}
                 maxLength={4000}
                 value={s.rationale}
                 onChange={(e) => set({ ...s, rationale: e.target.value })}
-                placeholder="Liên hệ dữ liệu với ngân sách, hành động, đánh đổi và điều còn chưa chắc chắn…"
+                placeholder={"Câu trả lời nên gồm:\n1. Ad Set nào tăng, giảm hoặc giữ nguyên ngân sách.\n2. Số liệu hoặc xu hướng cụ thể làm dẫn chứng.\n3. Lý do dữ liệu đó dẫn đến quyết định của bạn.\n4. Đánh đổi, rủi ro và giả thuyết cần kiểm chứng."}
               />
             </label>
             <small>
-              {s.rationale.length} ký tự · gợi ý 300–800 ký tự, tối đa 4.000 ký
-              tự để bảo vệ dữ liệu nộp bài. Giảng viên đánh giá nội dung lập
-              luận.
+              {s.rationale.length}/4.000 ký tự · Gợi ý 300–800 ký tự.
             </small>
           </section>
         </>
