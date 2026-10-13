@@ -63,6 +63,7 @@ export function EvidenceBoard({
           <label className="grow">
             Nhận xét của bạn
             <input
+              maxLength={1000}
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Ghi số liệu, xu hướng và Ad Set liên quan…"
@@ -256,14 +257,15 @@ export default function Decisions({
           <textarea
             aria-label="Lập luận của bạn"
             rows={5}
+            maxLength={4000}
             value={s.rationale}
             onChange={(e) => set({ ...s, rationale: e.target.value })}
             placeholder="Liên hệ dữ liệu với ngân sách, hành động, đánh đổi và điều còn chưa chắc chắn…"
           />
         </label>
         <small>
-          {s.rationale.length} ký tự · gợi ý 300–800 ký tự, không giới hạn cứng.
-          Giảng viên đánh giá nội dung lập luận.
+          {s.rationale.length} ký tự · gợi ý 300–800 ký tự, tối đa 4.000 ký tự
+          để bảo vệ dữ liệu nộp bài. Giảng viên đánh giá nội dung lập luận.
         </small>
       </section>
       <section className="card">
@@ -297,6 +299,7 @@ export default function Decisions({
           <textarea
             aria-label="Điều kiện và hành động điều chỉnh"
             rows={3}
+            maxLength={2000}
             value={s.rule}
             onChange={(e) => set({ ...s, rule: e.target.value })}
             placeholder="Nếu chỉ số nào thay đổi, trong khoảng thời gian nào, bạn sẽ kiểm tra hoặc điều chỉnh điều gì?"

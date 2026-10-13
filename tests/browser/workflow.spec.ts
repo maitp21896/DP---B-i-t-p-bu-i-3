@@ -2,6 +2,11 @@ import { test, expect } from "@playwright/test";
 import { PDFDocument } from "pdf-lib";
 const rationale =
   "Tôi giữ ngân sách người mới để mở rộng nguồn truy cập. Broad có LPV Rate thấp nên tôi kiểm tra tốc độ trang và tracking trước khi kết luận nguyên nhân. Retargeting có Frequency cao và CPA tăng, vì vậy cần creative mới và kiểm chứng xu hướng. Tôi ưu tiên Traffic và theo dõi Cost/LPV cùng ATC Rate.";
+async function begin(page: import("@playwright/test").Page) {
+  await page.getByLabel("Họ và tên", { exact: true }).fill("Học Viên Kiểm Thử");
+  await page.getByLabel("Mã lớp", { exact: true }).fill("DP27");
+  await page.getByRole("button", { name: "Khám phá chiến dịch" }).click();
+}
 async function fill(page: import("@playwright/test").Page) {
   await page.getByRole("button", { name: "Lập chiến lược" }).click();
   await page.getByLabel("Kiểm tra tốc độ mobile và hụt").check();
@@ -26,7 +31,11 @@ test("learner completes, persists, revises once, exports and resets", async ({
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await page.goto("/");
-  await page.getByRole("button", { name: "Khám phá chiến dịch" }).click();
+  await page.screenshot({
+    path: "/tmp/glow-nature-assignment.png",
+    fullPage: true,
+  });
+  await begin(page);
   await page.screenshot({
     path: "/tmp/glow-nature-dashboard.png",
     fullPage: true,
@@ -86,7 +95,7 @@ test("learner completes, persists, revises once, exports and resets", async ({
     page.getByRole("button", { name: "Khám phá chiến dịch" }),
   ).toBeVisible();
   await page.reload();
-  await page.getByRole("button", { name: "Khám phá chiến dịch" }).click();
+  await begin(page);
   await page.getByRole("button", { name: "Lập chiến lược" }).click();
   await expect(
     page.getByLabel("Lập luận của bạn", { exact: true }),
@@ -98,7 +107,7 @@ test("empty submissions blocked and tablet layout has no body overflow", async (
 }) => {
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Khám phá chiến dịch" }).click();
+  await begin(page);
   await page.getByRole("button", { name: "Lập chiến lược" }).click();
   await page.getByRole("button", { name: "Chạy đánh giá quyết định" }).click();
   await expect(page.locator(".error[role=alert]")).toBeVisible();
@@ -112,7 +121,7 @@ test("empty submissions blocked and tablet layout has no body overflow", async (
 test("mobile fallback contains dashboard and decisions", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Khám phá chiến dịch" }).click();
+  await begin(page);
   await expect(
     page.getByRole("heading", { name: "So sánh Ad Set" }),
   ).toBeVisible();
@@ -127,4 +136,93 @@ test("mobile fallback contains dashboard and decisions", async ({ page }) => {
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+});
+
+test("assignment review preserves progress; identity required; server confirmation separated from simulation", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("button", { name: /^Khám phá dữ liệu/ }),
+  ).toBeDisabled();
+  await page.getByLabel("Họ và tên", { exact: true }).fill("A");
+  await page.getByLabel("Mã lớp", { exact: true }).fill("DP27");
+  await page.getByRole("button", { name: "Khám phá chiến dịch" }).click();
+  await expect(page.getByText("TRƯỚC KHI BẮT ĐẦU")).toBeVisible();
+  await begin(page);
+  await fill(page);
+  await page.getByRole("button", { name: "Xem lại yêu cầu bài tập" }).click();
+  await expect(page.getByRole("dialog")).toContainText("Phân bổ ngân sách");
+  await page.getByRole("button", { name: "Tiếp tục bài làm" }).click();
+  await expect(
+    page.getByLabel("Lập luận của bạn", { exact: true }),
+  ).toHaveValue(rationale);
+  let calls = 0;
+  let firstBody: string | undefined;
+  await page.route("**/api/submissions", async (route) => {
+    calls++;
+    const body = route.request().postData()!;
+    if (calls === 1) {
+      firstBody = body;
+      await route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "Lỗi lưu bài kiểm thử" }),
+      });
+    } else {
+      expect(body).toBe(firstBody);
+      const parsed = JSON.parse(body);
+      await route.fulfill({
+        status: 201,
+        contentType: "application/json",
+        body: JSON.stringify({
+          id: parsed.id,
+          submittedAt: "2026-10-13T06:00:00.000Z",
+          status: "submitted",
+        }),
+      });
+    }
+  });
+  await page.getByRole("button", { name: "Chạy đánh giá quyết định" }).click();
+  expect(calls).toBe(0);
+  await expect(page.locator(".proposal")).toContainText("Học Viên Kiểm Thử");
+  await page.getByLabel("Tôi đã kiểm tra đề xuất").check();
+  await page
+    .getByRole("button", { name: "Nộp đề xuất cuối cùng", exact: true })
+    .click();
+  await expect(page.locator(".final-submit .error")).toContainText(
+    "Lỗi lưu bài kiểm thử",
+  );
+  await expect(
+    page.getByText("Đã nộp đề xuất cho giảng viên"),
+  ).not.toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Thử nộp lại" })).toBeVisible();
+  await page.getByRole("button", { name: "Thử nộp lại" }).click();
+  await expect(page.getByText("Đã nộp đề xuất cho giảng viên")).toBeVisible();
+  await page.reload();
+  await expect(page.getByText("Đã nộp đề xuất cho giảng viên")).toBeVisible();
+  expect(calls).toBe(2);
+  const response = await request.post("/api/trainer/submissions", { data: {} });
+  expect(response.status()).toBe(404);
+});
+test("trainer shortcut opens Supabase results without an app login", async ({
+  page,
+}) => {
+  await page.goto("/trainer");
+  await expect(
+    page.getByRole("heading", { name: "Mở bảng kết quả học viên" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Mở bảng kết quả trên Supabase ↗" }),
+  ).toHaveAttribute(
+    "href",
+    "https://supabase.com/dashboard/project/bfcgltjyrtpjgqvbexxz/editor",
+  );
+  await expect(page.getByRole("textbox")).toHaveCount(0);
+  await page.screenshot({
+    path: "/tmp/glow-nature-trainer-simple.png",
+    fullPage: true,
+  });
 });

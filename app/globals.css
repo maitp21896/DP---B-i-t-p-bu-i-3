@@ -1140,3 +1140,327 @@ details p {
     font-size: 8px;
   }
 }
+/* Assignment, identified drafts and centralized submissions */
+.assignment h2 {
+  font-size: 23px;
+  margin-top: 10px;
+}
+.assignment > p {
+  max-width: 900px;
+  font-size: 12px;
+}
+.assignment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 24px 0;
+}
+.assignment-grid > div {
+  border-top: 2px solid #399180;
+  padding: 18px;
+  background: #f3f8f6;
+  border-radius: 0 0 8px 8px;
+}
+.assignment-grid > div > span {
+  color: #38917f;
+  font-size: 11px;
+  font-weight: 700;
+}
+.assignment-grid h3 {
+  font-size: 14px;
+  margin: 10px 0;
+}
+.assignment-grid p {
+  font-size: 12px;
+  margin: 0;
+}
+.assignment-dialog {
+  border: 0;
+  border-radius: 13px;
+  padding: 30px;
+  max-width: 900px;
+  width: calc(100% - 36px);
+  color: var(--navy);
+  box-shadow: 0 24px 90px #132b3655;
+}
+.assignment-dialog::backdrop {
+  background: #102630aa;
+}
+.assignment-dialog .bottom-actions span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.identity-card p {
+  font-size: 12px;
+  max-width: 850px;
+}
+.identity-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18px;
+  margin: 20px 0;
+}
+.identity-grid input {
+  font-size: 14px;
+}
+.assignment-link {
+  font-size: 11px;
+  padding: 8px 11px;
+}
+.report-identity {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+}
+.report-identity span:last-child {
+  overflow-wrap: anywhere;
+}
+.final-submit {
+  border: 1px solid #66aa99;
+  border-top: 4px solid #137f73;
+}
+.final-submit p {
+  font-size: 12px;
+}
+.confirm-choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 900px;
+  margin: 15px 0 20px;
+}
+.final-submit .error {
+  margin-bottom: 15px;
+}
+.submission-confirmation {
+  background: #eff8f3;
+  border-color: #8bbfa9;
+}
+.submission-confirmation p {
+  font-size: 12px;
+}
+.reference {
+  overflow-wrap: anywhere;
+}
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.trainer-shell {
+  min-height: 100vh;
+}
+.trainer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #142c38;
+  color: #d1e5e5;
+  padding: 23px 40px;
+}
+.trainer-brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 12px;
+}
+.trainer-brand > span:first-child {
+  font-size: 11px;
+  letter-spacing: 2px;
+  line-height: 1.25;
+}
+.trainer-brand strong {
+  font-size: 15px;
+}
+.trainer-brand-rule {
+  height: 30px;
+  width: 1px;
+  background: #55747f;
+}
+.trainer-header > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.trainer-header .text-button {
+  color: #d1e5e5;
+}
+.trainer-header .badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.trainer-shell main {
+  max-width: 1250px;
+  padding: 36px;
+}
+.trainer-login {
+  max-width: 570px;
+  margin: 30px auto;
+  padding: 38px;
+}
+.trainer-login h1 {
+  font-size: 30px;
+  margin-top: 14px;
+}
+.trainer-login p {
+  font-size: 12px;
+}
+.trainer-login form {
+  display: grid;
+  gap: 18px;
+  margin-top: 25px;
+}
+.trainer-login form button {
+  margin: 6px 0 12px;
+}
+.trainer-back {
+  display: block;
+  font-size: 11px;
+  color: #137f73;
+  margin-top: 22px;
+}
+.trainer-filters {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.trainer-filters label {
+  flex: 1;
+  min-width: 180px;
+}
+.trainer-detail-title {
+  margin-top: 25px;
+}
+.empty-state {
+  text-align: center;
+  padding: 40px 15px;
+}
+.empty-state p {
+  font-size: 12px;
+  max-width: 650px;
+  margin: 15px auto;
+}
+.revision-table {
+  white-space: normal;
+  table-layout: fixed;
+}
+.revision-table th:first-child {
+  width: 150px;
+}
+.revision-table td {
+  vertical-align: top;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+.revision-table td p {
+  font-size: 12px;
+}
+.trainer-shell table {
+  font-size: 12px;
+}
+.trainer-shell thead th {
+  font-size: 11px;
+}
+.trainer-shell .page-title {
+  margin-bottom: 24px;
+}
+.trainer-shell .error {
+  margin-bottom: 20px;
+}
+@media (max-width: 1150px) {
+  .topbar {
+    height: auto;
+    min-height: 77px;
+    flex-wrap: wrap;
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  .top-actions {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 850px) {
+  .assignment-grid {
+    gap: 12px;
+  }
+  .assignment-grid > div {
+    padding: 14px;
+  }
+  .assignment-grid h3 {
+    font-size: 12px;
+  }
+  .assignment-grid p {
+    font-size: 11px;
+  }
+  .trainer-header {
+    padding: 20px;
+  }
+  .trainer-shell main {
+    padding: 24px;
+  }
+  .trainer-login {
+    padding: 26px;
+  }
+}
+@media (max-width: 570px) {
+  .assignment-grid,
+  .identity-grid {
+    grid-template-columns: 1fr;
+  }
+  .assignment-link {
+    font-size: 10px;
+  }
+  .assignment-dialog {
+    padding: 20px;
+  }
+  .assignment-dialog .bottom-actions {
+    flex-wrap: wrap;
+  }
+  .trainer-header {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .trainer-login {
+    padding: 21px;
+  }
+  .trainer-login h1 {
+    font-size: 24px;
+  }
+  .trainer-shell main {
+    padding: 20px 15px;
+  }
+  .report-identity {
+    gap: 12px;
+  }
+  .identity-card .bottom-actions {
+    flex-wrap: wrap;
+  }
+  .trainer-filters label {
+    min-width: 100%;
+  }
+}
+@media print {
+  .trainer-shell main {
+    padding: 0;
+    margin: 0;
+    max-width: none;
+  }
+  .report-identity {
+    font-size: 10px;
+    gap: 15px;
+    padding: 6px 0;
+  }
+  .trainer-shell .proposal {
+    border: 0;
+  }
+  .trainer-shell .no-print {
+    display: none !important;
+  }
+}
