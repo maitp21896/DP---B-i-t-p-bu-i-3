@@ -22,7 +22,11 @@ import {
   overall,
   shortNames,
 } from "@/lib/metrics";
-export const colors = { broad: "#28a69b", lal: "#5368d6", rt: "#d49746" };
+export const colors = {
+  broad: "var(--chart-broad)",
+  lal: "var(--chart-lal)",
+  rt: "var(--chart-rt)",
+};
 export default function Dashboard() {
   const [metric, setMetric] = useState<Metric>("cpa");
   const [visible, setVisible] = useState<AdId[]>(ids);
@@ -119,7 +123,7 @@ export default function Dashboard() {
               <CartesianGrid
                 strokeDasharray="3 5"
                 vertical={false}
-                stroke="#e6ebee"
+                stroke="var(--border)"
               />
               <XAxis dataKey="day" tickLine={false} axisLine={false} />
               <YAxis
@@ -153,9 +157,7 @@ export default function Dashboard() {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        <p className="caption">
-          CPA = Spend / Purchase.
-        </p>
+        <p className="caption">CPA = Spend / Purchase.</p>
       </section>
       <section className="card">
         <div className="section-head">

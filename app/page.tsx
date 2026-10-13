@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import {
-  Leaf,
   ArrowRight,
   RotateCcw,
   Clock3,
@@ -119,10 +118,12 @@ export default function Home() {
       <aside className="sidebar no-print">
         <a className="brand" href="#">
           <span className="brand-icon">
-            <Leaf size={23} />
+            <BarChart3 size={23} />
           </span>
           <span>
-            glow nature<small>META PRACTICE</small>
+            Tomorrow
+            <br />
+            Marketers<small>META ADS PRACTICE</small>
           </span>
         </a>
         <div className="workspace-label">KHÔNG GIAN HỌC TẬP</div>
@@ -137,7 +138,9 @@ export default function Home() {
                 className={s.stage === i ? "nav active" : "nav"}
                 disabled={
                   [2, 3, 4].includes(i) &&
-                  (s.submissions.length === 2 || !!s.delivery || !!s.pendingSubmission)
+                  (s.submissions.length === 2 ||
+                    !!s.delivery ||
+                    !!s.pendingSubmission)
                 }
                 onClick={() => go(i)}
               >
@@ -197,7 +200,10 @@ export default function Home() {
         <main>
           <div className="page-title no-print">
             <div>
-              <span className="eyebrow exercise-name">Bài tập thực hành Meta Consideration &amp; Conversion Optimization</span>
+              <span className="eyebrow exercise-name">
+                Bài tập thực hành Meta Consideration &amp; Conversion
+                Optimization
+              </span>
               <h1>
                 {
                   [
@@ -232,7 +238,12 @@ export default function Home() {
                 className={i <= s.stage ? "done" : ""}
                 key={label}
                 aria-current={s.stage === i ? "step" : undefined}
-                disabled={[2, 3, 4].includes(i) && (s.submissions.length === 2 || !!s.delivery || !!s.pendingSubmission)}
+                disabled={
+                  [2, 3, 4].includes(i) &&
+                  (s.submissions.length === 2 ||
+                    !!s.delivery ||
+                    !!s.pendingSubmission)
+                }
                 onClick={() => go(i)}
               >
                 <span>{i + 1}</span>
@@ -267,29 +278,38 @@ export default function Home() {
             <section className="case-brief card">
               <h2>Case Glow Nature</h2>
               <p>
-                Bạn là Performance Marketer của Glow Nature, thương hiệu chăm sóc
-                da hữu cơ cho da nhạy cảm, bán qua website. Dựa trên dữ liệu
+                Bạn là Performance Marketer của Glow Nature, thương hiệu chăm
+                sóc da hữu cơ cho da nhạy cảm, bán qua website. Dựa trên dữ liệu
                 <strong> 7 ngày chạy Meta Ads</strong>, hãy đề xuất tối ưu cho
                 tuần tiếp theo với ngân sách <strong>8.000.000 ₫</strong>.
               </p>
               <dl className="case-audiences">
                 <div>
                   <dt>Ad Set A · Broad</dt>
-                  <dd>Nữ 25–40 tại Hà Nội và TP.HCM, không giới hạn sở thích.</dd>
+                  <dd>
+                    Nữ 25–40 tại Hà Nội và TP.HCM, không giới hạn sở thích.
+                  </dd>
                 </div>
                 <div>
                   <dt>Ad Set B · Lookalike 1%</dt>
-                  <dd>Tương tự người mua trong 180 ngày; giới hạn địa lý và tuổi phù hợp.</dd>
+                  <dd>
+                    Tương tự người mua trong 180 ngày; giới hạn địa lý và tuổi
+                    phù hợp.
+                  </dd>
                 </div>
                 <div>
                   <dt>Ad Set C · Retargeting</dt>
-                  <dd>Người xem trang sản phẩm trong 30 ngày, loại trừ người đã mua.</dd>
+                  <dd>
+                    Người xem trang sản phẩm trong 30 ngày, loại trừ người đã
+                    mua.
+                  </dd>
                 </div>
               </dl>
               <p className="case-objective">
                 <strong>Mục tiêu chiến dịch hiện tại: Traffic.</strong> Đánh giá
                 chất lượng truy cập và tín hiệu chuyển đổi; Purchase và CPA là
-                chỉ số chẩn đoán. Giả định các tệp đã được loại trừ để giảm trùng lặp.
+                chỉ số chẩn đoán. Giả định các tệp đã được loại trừ để giảm
+                trùng lặp.
               </p>
             </section>
           )}
@@ -516,7 +536,7 @@ export default function Home() {
           )}
         </main>
         <footer className="app-footer no-print">
-          Glow Nature · Meta Consideration & Conversion Optimization{" "}
+          Tomorrow Marketers · Meta Consideration & Conversion Optimization{" "}
           <span>Tomorrow Marketers Academy · Học qua quyết định</span>
         </footer>
       </div>
