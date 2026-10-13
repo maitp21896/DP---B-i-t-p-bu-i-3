@@ -220,22 +220,22 @@ test("tablet and mobile do not overflow in popup, dataset or tasks", async ({
     ).toBe(true);
   }
 });
-test("trainer page has no login and rejects public access to Excel", async ({
+test("trainer page and download are public, while export validates its request", async ({
   page,
   request,
 }) => {
   await page.goto("/trainer");
   await expect(
-    page.getByRole("heading", { name: "Bài nộp của học viên" }),
+    page.getByRole("button", { name: "Tải Excel tổng hợp" }),
   ).toBeVisible();
   await expect(
-    page.getByText("Hãy mở link riêng dành cho trainer", { exact: false }),
+    page.getByRole("heading", { name: "Đáp án gợi ý & hướng dẫn nhận xét" }),
   ).toBeVisible();
   const response = await request.post("/api/trainer/export", {
     headers: { origin: "http://127.0.0.1:3000" },
-    data: { classCode: "DP27" },
+    data: { classCode: "!" },
   });
-  expect(response.status()).toBe(403);
+  expect(response.status()).toBe(400);
 });
 
 test("legacy v2 draft keeps identity, budgets and rationale in the new task flow", async ({
@@ -284,11 +284,12 @@ test("legacy v2 draft keeps identity, budgets and rationale in the new task flow
     page.getByRole("dialog", { name: "Thông tin học viên" }),
   ).toHaveCount(0);
 });
-test("trainer private-link UI downloads a class Excel file without login", async ({
+test("trainer public page downloads all-class Excel without a token", async ({
   page,
 }) => {
   await page.route("**/api/trainer/export", (route) => {
     expect(route.request().postDataJSON()).toEqual({});
+    expect(route.request().headers()).not.toHaveProperty("authorization");
     return route.fulfill({
       status: 200,
       headers: {
@@ -298,7 +299,7 @@ test("trainer private-link UI downloads a class Excel file without login", async
       body: Buffer.from("test-only-download-response"),
     });
   });
-  await page.goto("/trainer#key=test-only-private-link-fixture-000000000000");
+  await page.goto("/trainer");
   await expect(page.getByLabel("Mã lớp", { exact: true })).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "Đáp án gợi ý & hướng dẫn nhận xét" }),

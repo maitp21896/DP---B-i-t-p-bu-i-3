@@ -2,7 +2,6 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import ExcelJS from "exceljs";
 import { classWorkbook } from "../lib/excel";
-import { validExportToken } from "../lib/trainer-export-auth";
 import { evaluate } from "../lib/simulation";
 import { Decision, StoredSubmission } from "../types/campaign";
 const d: Decision = {
@@ -49,12 +48,4 @@ test("xlsx includes final budgets, identity, original reasoning and both version
   assert.equal(history.rowCount, 3);
   assert.equal(history.getCell("D3").value, 2);
   assert.ok(String(history.getCell("M2").value).includes("Chất lượng traffic"));
-});
-test("private export token must match and cannot be missing or short", () => {
-  const token = "test-only-private-token".repeat(3);
-  assert.equal(validExportToken(token, token), true);
-  assert.equal(validExportToken("wrong".repeat(12), token), false);
-  assert.equal(validExportToken("", token), false);
-  assert.equal(validExportToken(token, undefined), false);
-  assert.equal(validExportToken("short", "short"), false);
 });

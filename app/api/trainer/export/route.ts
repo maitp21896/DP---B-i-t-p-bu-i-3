@@ -5,20 +5,12 @@ import {
   readBoundedJson,
   checkOrigin,
 } from "@/lib/submissions/http";
-import { validExportToken } from "@/lib/trainer-export-auth";
 import { classWorkbook } from "@/lib/excel";
 import { StoredSubmission } from "@/types/campaign";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
-    const token =
-      request.headers.get("authorization")?.replace(/^Bearer /, "") || "";
-    if (!validExportToken(token, process.env.TRAINER_EXPORT_TOKEN))
-      throw new HttpError(
-        403,
-        "Link tải kết quả không hợp lệ hoặc đã được đổi.",
-      );
     checkOrigin(request);
     const body = (await readBoundedJson(request, 1024)) as {
       classCode?: unknown;
