@@ -1,0 +1,220 @@
+{
+  "source": "Glow_Nature_Campaign_Rescue_Formula_ATC_Updated.xlsx",
+  "sha256": "7d655fed97b79121495fb46200d0affe25028f49d84c18bd8ec060edfe8ce42b",
+  "adSets": [
+    {
+      "id": "broad",
+      "name": "Broad | Nữ 25–40, HN/HCM",
+      "reach": 70000,
+      "frequency": 1.8
+    },
+    {
+      "id": "lal",
+      "name": "LAL 1% | Khách mua 180 ngày",
+      "reach": 43000,
+      "frequency": 2.4
+    },
+    {
+      "id": "rt",
+      "name": "RT | Xem SP 30 ngày, chưa mua",
+      "reach": 12000,
+      "frequency": 6.8
+    }
+  ],
+  "daily": [
+    {
+      "day": 1,
+      "id": "broad",
+      "spend": 400000,
+      "clicks": 227,
+      "lpv": 119,
+      "atc": 2,
+      "purchases": 1
+    },
+    {
+      "day": 2,
+      "id": "broad",
+      "spend": 420000,
+      "clicks": 239,
+      "lpv": 125,
+      "atc": 6,
+      "purchases": 1
+    },
+    {
+      "day": 3,
+      "id": "broad",
+      "spend": 440000,
+      "clicks": 249,
+      "lpv": 130,
+      "atc": 3,
+      "purchases": 1
+    },
+    {
+      "day": 4,
+      "id": "broad",
+      "spend": 410000,
+      "clicks": 232,
+      "lpv": 120,
+      "atc": 7,
+      "purchases": 1
+    },
+    {
+      "day": 5,
+      "id": "broad",
+      "spend": 430000,
+      "clicks": 243,
+      "lpv": 126,
+      "atc": 4,
+      "purchases": 2
+    },
+    {
+      "day": 6,
+      "id": "broad",
+      "spend": 450000,
+      "clicks": 255,
+      "lpv": 132,
+      "atc": 5,
+      "purchases": 1
+    },
+    {
+      "day": 7,
+      "id": "broad",
+      "spend": 450000,
+      "clicks": 255,
+      "lpv": 132,
+      "atc": 4,
+      "purchases": 2
+    },
+    {
+      "day": 1,
+      "id": "lal",
+      "spend": 400000,
+      "clicks": 181,
+      "lpv": 127,
+      "atc": 5,
+      "purchases": 1
+    },
+    {
+      "day": 2,
+      "id": "lal",
+      "spend": 410000,
+      "clicks": 185,
+      "lpv": 130,
+      "atc": 9,
+      "purchases": 1
+    },
+    {
+      "day": 3,
+      "id": "lal",
+      "spend": 420000,
+      "clicks": 189,
+      "lpv": 133,
+      "atc": 6,
+      "purchases": 1
+    },
+    {
+      "day": 4,
+      "id": "lal",
+      "spend": 430000,
+      "clicks": 193,
+      "lpv": 135,
+      "atc": 11,
+      "purchases": 2
+    },
+    {
+      "day": 5,
+      "id": "lal",
+      "spend": 440000,
+      "clicks": 198,
+      "lpv": 138,
+      "atc": 7,
+      "purchases": 2
+    },
+    {
+      "day": 6,
+      "id": "lal",
+      "spend": 450000,
+      "clicks": 202,
+      "lpv": 141,
+      "atc": 8,
+      "purchases": 2
+    },
+    {
+      "day": 7,
+      "id": "lal",
+      "spend": 450000,
+      "clicks": 202,
+      "lpv": 141,
+      "atc": 6,
+      "purchases": 2
+    },
+    {
+      "day": 1,
+      "id": "rt",
+      "spend": 260000,
+      "clicks": 98,
+      "lpv": 81,
+      "atc": 10,
+      "purchases": 3
+    },
+    {
+      "day": 2,
+      "id": "rt",
+      "spend": 270000,
+      "clicks": 102,
+      "lpv": 84,
+      "atc": 5,
+      "purchases": 3
+    },
+    {
+      "day": 3,
+      "id": "rt",
+      "spend": 280000,
+      "clicks": 106,
+      "lpv": 87,
+      "atc": 9,
+      "purchases": 2
+    },
+    {
+      "day": 4,
+      "id": "rt",
+      "spend": 290000,
+      "clicks": 108,
+      "lpv": 89,
+      "atc": 6,
+      "purchases": 2
+    },
+    {
+      "day": 5,
+      "id": "rt",
+      "spend": 300000,
+      "clicks": 112,
+      "lpv": 92,
+      "atc": 8,
+      "purchases": 1
+    },
+    {
+      "day": 6,
+      "id": "rt",
+      "spend": 300000,
+      "clicks": 112,
+      "lpv": 91,
+      "atc": 4,
+      "purchases": 1
+    },
+    {
+      "day": 7,
+      "id": "rt",
+      "spend": 300000,
+      "clicks": 112,
+      "lpv": 91,
+      "atc": 7,
+      "purchases": 1
+    }
+  ],
+  "limitations": [
+    "Ô công thức Excel không có kết quả lưu sẵn; tổng và tỷ lệ được tính lại từ 21 dòng dữ liệu gốc.",
+    "Reach và Frequency là số báo cáo được cung cấp, không cộng Reach theo ngày hoặc giữa các Ad Set.",
+    "Không có impressions, dữ liệu thiết bị/placement hoặc tốc độ trang; chưa tính được CTR/CPM hoặc kết luận nguyên nhân."
+  ]
+}
