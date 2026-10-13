@@ -24,9 +24,9 @@ export const fresh = (): Session => ({
   delivery: null,
   pendingSubmission: null,
 });
-const key = "glow-nature-session-v2";
+const key = "glow-nature-session-v3";
 const draftSchema = z.object({
-  stage: z.number().int().min(0).max(3),
+  stage: z.number().int().min(0).max(5),
   started: z.number(),
   timer: z.boolean(),
   budgets: z.object({
@@ -86,9 +86,16 @@ export function useSession() {
     try {
       const raw =
         localStorage.getItem(key) ||
+        localStorage.getItem("glow-nature-session-v2") ||
         localStorage.getItem("glow-nature-session-v1");
       if (raw) {
-        const parsed = draftSchema.safeParse({ ...next, ...JSON.parse(raw) });
+        const saved = JSON.parse(raw);
+        if (!localStorage.getItem(key))
+          saved.stage =
+            ({ 0: 0, 1: 1, 2: 2, 3: 5 } as Record<number, number>)[
+              saved.stage
+            ] ?? 0;
+        const parsed = draftSchema.safeParse({ ...next, ...saved });
         if (
           parsed.success &&
           Date.now() - parsed.data.started < 90 * 24 * 60 * 60 * 1000
@@ -97,7 +104,6 @@ export function useSession() {
           if (!identitySchema.safeParse(next.identity).success) next.stage = 0;
         } else setStorageError(true);
       }
-      localStorage.removeItem("glow-nature-session-v1");
     } catch {
       setStorageError(true);
     }
@@ -108,6 +114,8 @@ export function useSession() {
     if (loaded)
       try {
         localStorage.setItem(key, JSON.stringify(session));
+        localStorage.removeItem("glow-nature-session-v1");
+        localStorage.removeItem("glow-nature-session-v2");
       } catch {
         setStorageError(true);
       }
@@ -122,6 +130,7 @@ export function useSession() {
       try {
         localStorage.removeItem(key);
         localStorage.removeItem("glow-nature-session-v1");
+        localStorage.removeItem("glow-nature-session-v2");
       } catch {
         setStorageError(true);
       }

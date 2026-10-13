@@ -1,44 +1,99 @@
+"use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 export default function Trainer() {
+  const [key, setKey] = useState("");
+  const [cls, setCls] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    setKey(new URLSearchParams(window.location.hash.slice(1)).get("key") || "");
+  }, []);
+  async function download(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    setDone(false);
+    try {
+      const response = await fetch("/api/trainer/export", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${key}`,
+        },
+        body: JSON.stringify({ classCode: cls.trim().toUpperCase() }),
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Không tải được file.");
+      }
+      const url = URL.createObjectURL(await response.blob());
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Glow-Nature-${cls.trim().toUpperCase()}.xlsx`;
+      a.click();
+      URL.revokeObjectURL(url);
+      setDone(true);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Không tải được file. Thử lại sau.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
   return (
     <div className="trainer-shell">
       <header className="trainer-header">
-        <strong>TOMORROW MARKETERS · KẾT QUẢ BÀI TẬP</strong>
+        <strong>TOMORROW MARKETERS · TRAINER</strong>
         <Link href="/">← Bài tập học viên</Link>
       </header>
       <main>
         <section className="card trainer-login">
-          <span className="eyebrow">CÁCH XEM ĐƠN GIẢN</span>
-          <h1>Mở bảng kết quả học viên</h1>
+          <span className="eyebrow">KẾT QUẢ CẢ LỚP · EXCEL</span>
+          <h1>Tải bài nộp của lớp</h1>
           <p>
-            Học viên bấm “Nộp đề xuất cuối cùng”. Kết quả được lưu trong
-            Supabase; bạn xem trực tiếp ở đó, không cần tạo tài khoản trainer
-            hay cấp quyền trong app.
+            Không cần tài khoản hoặc mở Supabase. Chọn mã lớp để tải toàn bộ bài
+            đã nộp, câu trả lời nguyên văn và lịch sử điều chỉnh.
           </p>
-          <ol>
-            <li>Mở Supabase bằng tài khoản quản lý dự án của bạn.</li>
-            <li>
-              Trong <strong>Table Editor</strong>, chọn bảng kết quả{" "}
-              <strong>trainer_results</strong>.
-            </li>
-            <li>
-              Lọc theo <strong>ma_lop</strong>, xem{" "}
-              <strong>lap_luan_nguyen_van</strong> và{" "}
-              <strong>bao_cao_day_du</strong>. Cột lịch sử lưu cả lần đầu và bản
-              điều chỉnh.
-            </li>
-          </ol>
-          <a
-            className="button-link"
-            href="https://supabase.com/dashboard/project/bfcgltjyrtpjgqvbexxz/editor"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Mở bảng kết quả trên Supabase ↗
-          </a>
+          {!key ? (
+            <div className="notice">
+              Hãy mở link riêng dành cho trainer để tải file. Link bài tập của
+              học viên không cấp quyền xem kết quả cả lớp.
+            </div>
+          ) : (
+            <form onSubmit={download}>
+              <label>
+                Mã lớp
+                <input
+                  required
+                  minLength={2}
+                  maxLength={24}
+                  value={cls}
+                  onChange={(e) => setCls(e.target.value.toUpperCase())}
+                  placeholder="DP27"
+                />
+              </label>
+              <button disabled={busy} type="submit">
+                {busy ? "Đang tạo file Excel…" : "Tải Excel tổng hợp"}
+              </button>
+              {error && (
+                <div className="error" role="alert">
+                  {error}
+                </div>
+              )}
+              {done && (
+                <p role="status" className="notice">
+                  Đã tải file Excel. Sheet “Tong hop lop” chứa bản cuối; “Lich
+                  su va phan hoi” chứa các phiên bản và phản hồi.
+                </p>
+              )}
+            </form>
+          )}
           <p className="caption">
-            Supabase sử dụng tài khoản quản lý dự án sẵn có của bạn. Trang này
-            không hiển thị công khai tên hoặc bài làm của học viên.
+            Chỉ lưu các bài đã nhận xác nhận nộp thành công. Link riêng và file
+            kết quả chỉ dành cho trainer.
           </p>
         </section>
       </main>

@@ -2,11 +2,11 @@
 
 Ứng dụng Next.js/TypeScript tiếng Việt cho Tomorrow Marketers. Giữ dashboard, ngân sách tương tác, mô phỏng, một lần điều chỉnh, local draft và báo cáo PDF.
 
-Luồng đơn giản: học viên nhập họ tên/mã lớp → làm bài → nộp bản cuối → server lưu Supabase → trainer mở `trainer_results` trong Supabase để xem. Không có đăng ký học viên, đăng nhập trainer trong app hoặc phân quyền trainer tự xây.
+Luồng học viên: popup họ tên/mã lớp → case & dataset → Bài 1 ngân sách → Bài 2 tối ưu → Bài 3 theo dõi → xem phản hồi/nộp bản cuối. Trainer mở link riêng, chọn mã lớp và tải Excel tổng hợp; không cần tài khoản hoặc mở Supabase.
 
 ## Cài đặt và triển khai
 
-[Hướng dẫn Supabase/Vercel đơn giản](docs/SUPABASE_SETUP.md). Chỉ cần URL Supabase và service-role key trên server. Không cần anon key. Không đưa key vào mã nguồn hoặc chat.
+[Hướng dẫn Supabase/Vercel đơn giản](docs/SUPABASE_SETUP.md). Cần URL Supabase và service-role key trên server, cùng `TRAINER_EXPORT_TOKEN` cho link tải Excel riêng. Xem [hướng dẫn Excel](docs/TRAINER_EXCEL.md). Không cần anon key. Không đưa key vào mã nguồn hoặc chat.
 
 ```sh
 npm ci
@@ -27,7 +27,7 @@ Workbook gốc được giữ nguyên tại `data/source.xlsx`, JSON tại `data
 
 `app/api/submissions` xác minh payload, tính lại feedback, tạo báo cáo dễ đọc và gọi RPC Supabase. Key chỉ nằm trên server. Học viên không được đọc danh sách bài. Receipt riêng xử lý retry để không lưu trùng. Payload/text có giới hạn, endpoint kiểm tra origin và database giới hạn số yêu cầu.
 
-`supabase/schema.sql` tạo bảng lưu, view `trainer_results`, RPC và cleanup 90 ngày. Trainer xem dữ liệu bằng tài khoản quản lý Supabase đã có; `/trainer` chỉ hướng dẫn và mở bảng. Không có trainer API riêng hay app login.
+`supabase/schema.sql` tạo bảng lưu, view `trainer_results`, RPC và cleanup 90 ngày. Supabase chỉ là backend lưu trữ. `/trainer` cho phép tải Excel theo mã lớp bằng link riêng; `/api/trainer/export` xác minh token trước khi đọc dữ liệu. Không có tài khoản hay app login.
 
 Local draft hồi phục khi refresh; reset xóa draft, không xóa bài server. Chỉ bấm Nộp cuối mới gửi bài; lỗi gửi không được coi là thành công. Báo cáo giữ nguyên câu trả lời, hiển thị họ tên/mã lớp và có thể in PDF.
 
@@ -37,7 +37,7 @@ Local draft hồi phục khi refresh; reset xóa draft, không xóa bài server.
 CHROMIUM_PATH=/usr/bin/chromium npm run test:browser -- --project=chromium
 ```
 
-Playwright chạy production server, kiểm tra identity, assignment review, persistence, revision, PDF, retry/confirmation và lối tắt xem kết quả. Kiểm thử phản hồi nộp bài dùng response giả lập có ghi rõ trong test; chưa chứng minh live Supabase.
+Playwright chạy production server, kiểm tra identity, assignment review, persistence, revision, PDF, retry/confirmation và trang tải Excel riêng. Kiểm thử phản hồi nộp bài dùng response giả lập có ghi rõ trong test; chưa chứng minh live Supabase.
 
 Kiểm tra SQL thật trong PostgreSQL Docker riêng, không dùng database production:
 
@@ -47,7 +47,7 @@ python tests/database/run.py
 docker rm -f glow-nature-rls-test
 ```
 
-SQL tests kiểm tra public không đọc/sửa dữ liệu, owner đọc view kết quả, retry/conflict, rate limit và cleanup. Đã kiểm chứng app POST → Supabase thật → đọc lại câu trả lời/báo cáo và retry không lưu trùng; test record đã được xóa. View `trainer_results` trên dự án thật cần chạy SQL mới. Safari/WebKit và phiên bản triển khai Vercel vẫn chưa được kiểm chứng trong lần cập nhật này.
+SQL tests kiểm tra public không đọc/sửa dữ liệu, owner đọc view kết quả, retry/conflict, rate limit và cleanup. Đã kiểm chứng app POST → Supabase thật → đọc lại câu trả lời/báo cáo và retry không lưu trùng; test record đã được xóa. Trainer không cần dùng view Supabase; Excel đọc trực tiếp các bài đã nộp từ bảng `submissions`. Safari/WebKit và phiên bản triển khai Vercel vẫn chưa được kiểm chứng trong lần cập nhật này.
 
 Trong cloud Node.js 24, dùng `NODE_USE_ENV_PROXY=1 npm start` để đi qua proxy có sẵn. Vercel không cần tùy chọn proxy này.
 

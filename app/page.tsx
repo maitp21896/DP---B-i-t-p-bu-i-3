@@ -13,7 +13,7 @@ import {
 import Dashboard from "@/components/Dashboard";
 import Decisions, { EvidenceBoard } from "@/components/Decisions";
 import Report from "@/components/Report";
-import IdentityForm from "@/components/Identity";
+import { IdentityDialog } from "@/components/Identity";
 import FinalSubmission from "@/components/FinalSubmission";
 import { Assignment, AssignmentDialog } from "@/components/Assignment";
 import { identitySchema } from "@/lib/submissions/schema";
@@ -23,10 +23,12 @@ import { Decision } from "@/types/campaign";
 import { actions } from "@/lib/actions";
 import { ids, money, shortNames } from "@/lib/metrics";
 const steps = [
-  "Bối cảnh",
-  "Khám phá dữ liệu",
-  "Ra quyết định",
-  "Đánh giá & đề xuất",
+  "Thông tin học viên",
+  "Case & dataset",
+  "Bài 1 · Ngân sách",
+  "Bài 2 · Tối ưu",
+  "Bài 3 · Theo dõi",
+  "Kết quả & nộp bài",
 ];
 export default function Home() {
   const {
@@ -40,10 +42,29 @@ export default function Home() {
   const [now, setNow] = useState(Date.now());
   const [confirmReset, setConfirmReset] = useState(false);
   const [showAssignment, setShowAssignment] = useState(false);
+  const [showIdentity, setShowIdentity] = useState(false);
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
+  useEffect(() => {
+    if (loaded && s.stage === 0) setShowIdentity(true);
+  }, [loaded, s.stage]);
+  function taskErrors(stage: number) {
+    const all = validate(s);
+    return all.filter((e) =>
+      stage === 2
+        ? /ngân sách|Phân bổ|giải thích|nhận xét/.test(e)
+        : stage === 3
+          ? /hành động/.test(e)
+          : /chỉ số|điều kiện/.test(e),
+    );
+  }
+  function nextTask() {
+    const problems = taskErrors(s.stage);
+    setErrors(problems);
+    if (!problems.length) go(s.stage + 1);
+  }
   if (!loaded)
     return <main className="loading">Đang tải không gian chiến dịch…</main>;
   const remaining = Math.max(0, 1200 - Math.floor((now - s.started) / 1000));
@@ -61,18 +82,28 @@ export default function Home() {
     const problems = validate(decision);
     setErrors(problems);
     if (problems.length === 0 && s.submissions.length < 2) {
-      set({ ...s, stage: 3, submissions: [...s.submissions, decision] });
+      set({ ...s, stage: 5, submissions: [...s.submissions, decision] });
       window.scrollTo(0, 0);
     }
   }
   function go(stage: number) {
     if (stage > 0 && !identitySchema.safeParse(s.identity).success) {
-      document
-        .getElementById("student-info")
-        ?.scrollIntoView({ behavior: "smooth" });
+      setShowIdentity(true);
       return;
     }
-    if (stage === 2 && (s.delivery || s.pendingSubmission)) return;
+    if (
+      [2, 3, 4].includes(stage) &&
+      (s.delivery || s.pendingSubmission || s.submissions.length === 2)
+    )
+      return;
+    if (stage === 3 && taskErrors(2).length) {
+      setErrors(taskErrors(2));
+      return;
+    }
+    if (stage === 4 && (taskErrors(2).length || taskErrors(3).length)) {
+      setErrors([...taskErrors(2), ...taskErrors(3)]);
+      return;
+    }
     const identity = identitySchema.safeParse(s.identity);
     set({
       ...s,
@@ -96,15 +127,20 @@ export default function Home() {
         <div className="workspace-label">KHÔNG GIAN HỌC TẬP</div>
         <nav>
           {steps.map((step, i) => {
-            const Icon = [Compass, BarChart3, Target, FileText][i];
+            const Icon = [Compass, BarChart3, Target, Target, Target, FileText][
+              i
+            ];
             return (
               <button
                 key={step}
                 className={s.stage === i ? "nav active" : "nav"}
                 disabled={
-                  (i === 3 && !submitted) ||
+                  (i === 5 && !submitted) ||
                   (i > 0 && !identitySchema.safeParse(s.identity).success) ||
-                  (i === 2 &&
+                  (i === 3 && taskErrors(2).length > 0) ||
+                  (i === 4 &&
+                    (taskErrors(2).length > 0 || taskErrors(3).length > 0)) ||
+                  ([2, 3, 4].includes(i) &&
                     (s.submissions.length === 2 ||
                       !!s.delivery ||
                       !!s.pendingSubmission))
@@ -171,25 +207,29 @@ export default function Home() {
               <h1>
                 {
                   [
-                    "Giải cứu chiến dịch. Bắt đầu từ dữ liệu.",
-                    "Dữ liệu nói gì về chiến dịch?",
-                    "Biến phân tích thành quyết định.",
-                    "Đánh giá chiến lược của bạn.",
+                    "Chào mừng đến Campaign Lab.",
+                    "Bối cảnh case & dữ liệu chiến dịch",
+                    "Bài 1 · Phân bổ ngân sách",
+                    "Bài 2 · Đề xuất hành động tối ưu",
+                    "Bài 3 · Theo dõi và điều chỉnh",
+                    "Đánh giá & nộp đề xuất cuối cùng",
                   ][s.stage]
                 }
               </h1>
               <p>
                 {
                   [
-                    "Bạn có 8 triệu đồng và 7 ngày để đưa ra một đề xuất có căn cứ.",
-                    "7 ngày đầu tiên · 3 Ad Set · Mục tiêu Traffic",
-                    "Phân bổ ngân sách, chọn hành động và bảo vệ lập luận.",
-                    "Nhìn lại đánh đổi, hoàn thiện đề xuất và xuất báo cáo.",
+                    "Nhập họ tên và mã lớp để bắt đầu bài tập.",
+                    "Hiểu tình huống, khám phá dataset và ghi lại bằng chứng.",
+                    "Chia 8 triệu đồng cho 3 Ad Set và giải thích quyết định.",
+                    "Chọn tối đa 3 thay đổi cụ thể cùng Ad Set áp dụng.",
+                    "Chọn 2–3 KPI và đặt điều kiện điều chỉnh chiến lược.",
+                    "Xem phản hồi, sửa một lần nếu cần và nộp bản cuối.",
                   ][s.stage]
                 }
               </p>
             </div>
-            <span className="step-count">BƯỚC {s.stage + 1} / 4</span>
+            <span className="step-count">BƯỚC {s.stage + 1} / 6</span>
           </div>
           <div className="progress no-print">
             {steps.map((label, i) => (
@@ -211,6 +251,18 @@ export default function Home() {
             </p>
           )}
           {s.stage === 0 && (
+            <section className="card">
+              <h2>Nhập thông tin để bắt đầu</h2>
+              <p>
+                Họ tên và mã lớp giúp trainer nhận diện bài làm của bạn. Sau khi
+                xác nhận, bạn sẽ vào bối cảnh case và dataset.
+              </p>
+              <button onClick={() => setShowIdentity(true)}>
+                Bắt đầu bài tập
+              </button>
+            </section>
+          )}
+          {s.stage === 1 && (
             <>
               <section className="brief-hero card">
                 <div>
@@ -231,15 +283,9 @@ export default function Home() {
                     Nhiệm vụ: đọc dữ liệu, cân nhắc đánh đổi và đưa ra đề xuất
                     tối ưu có thể kiểm chứng.
                   </p>
-                  <button
-                    onClick={() =>
-                      document
-                        .getElementById("student-info")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
-                  >
-                    Bắt đầu bài tập <ArrowRight size={17} />
-                  </button>
+                  <span className="badge">
+                    Học viên: {s.identity.studentName} · {s.identity.classCode}
+                  </span>
                 </div>
                 <div className="brief-stats">
                   <Leaf size={44} />
@@ -250,10 +296,7 @@ export default function Home() {
                   </div>
                 </div>
               </section>
-              <div className="card">
-                <Assignment />
-              </div>
-              <IdentityForm s={s} set={set} start={() => go(1)} />
+
               <div className="scenario-grid">
                 {[
                   {
@@ -314,17 +357,35 @@ export default function Home() {
                   }
                   onClick={() => go(2)}
                 >
-                  Lập chiến lược <ArrowRight size={17} />
+                  Tiếp theo · Bài 1 <ArrowRight size={17} />
                 </button>
               </div>
             </>
           )}
-          {s.stage === 2 && (
+          {[2, 3, 4].includes(s.stage) && (
             <>
-              <Decisions s={s} set={set} />
+              <section className="notice">
+                <strong>Yêu cầu bài {s.stage - 1}: </strong>
+                {s.stage === 2
+                  ? "Phân bổ đủ 8 triệu; giải thích Ad Set tăng, giảm hoặc giữ nguyên dựa trên dữ liệu."
+                  : s.stage === 3
+                    ? "Đề xuất tối đa 3 thay đổi cụ thể về creative, đối tượng hoặc landing page; chỉ rõ Ad Set."
+                    : "Chọn 2–3 KPI và viết điều kiện cùng hành động điều chỉnh."}
+              </section>
+              <Decisions
+                s={s}
+                set={set}
+                part={
+                  s.stage === 2
+                    ? "budget"
+                    : s.stage === 3
+                      ? "actions"
+                      : "monitor"
+                }
+              />
               {errors.length > 0 && (
                 <div className="error" role="alert">
-                  <strong>Hoàn thiện đề xuất trước khi đánh giá:</strong>
+                  <strong>Hoàn thiện câu trả lời trước khi tiếp tục:</strong>
                   <ul>
                     {errors.map((e) => (
                       <li key={e}>{e}</li>
@@ -333,19 +394,25 @@ export default function Home() {
                 </div>
               )}
               <div className="bottom-actions">
-                <button className="secondary" onClick={() => go(1)}>
-                  Quay lại dữ liệu
+                <button className="secondary" onClick={() => go(s.stage - 1)}>
+                  ← Quay lại
                 </button>
-                <button onClick={submit} disabled={s.submissions.length >= 2}>
-                  {s.submissions.length === 1
-                    ? "Đánh giá bản điều chỉnh"
-                    : "Chạy đánh giá quyết định"}{" "}
-                  <ArrowRight size={17} />
-                </button>
+                {s.stage < 4 ? (
+                  <button onClick={nextTask}>
+                    Tiếp theo · Bài {s.stage} <ArrowRight size={17} />
+                  </button>
+                ) : (
+                  <button onClick={submit}>
+                    {s.submissions.length === 1
+                      ? "Đánh giá bản điều chỉnh"
+                      : "Xem đánh giá mô phỏng"}{" "}
+                    <ArrowRight size={17} />
+                  </button>
+                )}
               </div>
             </>
           )}
-          {s.stage === 3 && submitted && result && (
+          {s.stage === 5 && submitted && result && (
             <>
               <section className="card evaluation no-print">
                 <div className="section-head">
@@ -503,6 +570,17 @@ export default function Home() {
           <span>Tomorrow Marketers Academy · Học qua quyết định</span>
         </footer>
       </div>
+      {showIdentity && (
+        <IdentityDialog
+          s={s}
+          set={set}
+          close={() => setShowIdentity(false)}
+          start={() => {
+            setShowIdentity(false);
+            go(1);
+          }}
+        />
+      )}
       {showAssignment && (
         <AssignmentDialog close={() => setShowAssignment(false)} />
       )}
