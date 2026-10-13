@@ -154,15 +154,13 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </div>
         <p className="caption">
-          CPA = Spend / Purchase. Purchase và CPA là chỉ số chẩn đoán, không
-          phải mục tiêu tối ưu của chiến dịch Traffic.
+          CPA = Spend / Purchase.
         </p>
       </section>
       <section className="card">
         <div className="section-head">
           <div>
             <h2>So sánh Ad Set</h2>
-            <p>Reach và Frequency được giữ nguyên từ báo cáo gốc.</p>
           </div>
           <button className="secondary" onClick={() => setDaily(!daily)}>
             {daily ? "Ẩn" : "Xem"} dữ liệu theo ngày

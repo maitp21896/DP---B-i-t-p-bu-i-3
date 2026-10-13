@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "Glow Nature — Campaign Rescue Simulator",
+  title: "Bài tập thực hành Meta Consideration & Conversion Optimization",
   description:
-    "Mô phỏng quyết định tối ưu chiến dịch Traffic — Tomorrow Marketers Academy",
+    "Thực hành phân tích dữ liệu Meta Ads và đề xuất tối ưu cho case Glow Nature — Tomorrow Marketers Academy",
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
