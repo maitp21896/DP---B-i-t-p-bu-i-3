@@ -6,7 +6,7 @@ Luồng học viên: popup họ tên/mã lớp → case & dataset → Bài 1 ng�
 
 ## Cài đặt và triển khai
 
-[Hướng dẫn Supabase/Vercel đơn giản](docs/SUPABASE_SETUP.md). Cần URL Supabase và service-role key trên server, cùng `TRAINER_EXPORT_TOKEN` cho link tải Excel riêng. Xem [hướng dẫn Excel](docs/TRAINER_EXCEL.md). Không cần anon key. Không đưa key vào mã nguồn hoặc chat.
+[Hướng dẫn Supabase/Vercel đơn giản](docs/SUPABASE_SETUP.md). Cần URL Supabase và service-role key trên server. Trang trainer tải Excel công khai, không cần token. Xem [hướng dẫn Excel](docs/TRAINER_EXCEL.md). Không cần anon key. Không đưa key vào mã nguồn hoặc chat.
 
 ```sh
 npm ci
