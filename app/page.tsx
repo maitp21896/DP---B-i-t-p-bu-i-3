@@ -96,12 +96,13 @@ export default function Home() {
       (s.delivery || s.pendingSubmission || s.submissions.length === 2)
     )
       return;
-    if (stage === 3 && taskErrors(2).length) {
-      setErrors(taskErrors(2));
-      return;
-    }
-    if (stage === 4 && (taskErrors(2).length || taskErrors(3).length)) {
-      setErrors([...taskErrors(2), ...taskErrors(3)]);
+    if (stage === 5 && !submitted) {
+      const firstIncomplete = [2, 3, 4].find((task) => taskErrors(task).length);
+      if (firstIncomplete) {
+        set({ ...s, stage: firstIncomplete });
+        setErrors(taskErrors(firstIncomplete));
+        window.scrollTo(0, 0);
+      } else submit();
       return;
     }
     const identity = identitySchema.safeParse(s.identity);
@@ -135,15 +136,8 @@ export default function Home() {
                 key={step}
                 className={s.stage === i ? "nav active" : "nav"}
                 disabled={
-                  (i === 5 && !submitted) ||
-                  (i > 0 && !identitySchema.safeParse(s.identity).success) ||
-                  (i === 3 && taskErrors(2).length > 0) ||
-                  (i === 4 &&
-                    (taskErrors(2).length > 0 || taskErrors(3).length > 0)) ||
-                  ([2, 3, 4].includes(i) &&
-                    (s.submissions.length === 2 ||
-                      !!s.delivery ||
-                      !!s.pendingSubmission))
+                  [2, 3, 4].includes(i) &&
+                  (s.submissions.length === 2 || !!s.delivery || !!s.pendingSubmission)
                 }
                 onClick={() => go(i)}
               >
@@ -233,10 +227,17 @@ export default function Home() {
           </div>
           <div className="progress no-print">
             {steps.map((label, i) => (
-              <div className={i <= s.stage ? "done" : ""} key={label}>
+              <button
+                type="button"
+                className={i <= s.stage ? "done" : ""}
+                key={label}
+                aria-current={s.stage === i ? "step" : undefined}
+                disabled={[2, 3, 4].includes(i) && (s.submissions.length === 2 || !!s.delivery || !!s.pendingSubmission)}
+                onClick={() => go(i)}
+              >
                 <span>{i + 1}</span>
                 {label}
-              </div>
+              </button>
             ))}
           </div>
           {storageError && (

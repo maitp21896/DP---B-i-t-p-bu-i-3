@@ -69,7 +69,7 @@ test("popup, case and dataset, three tasks, revision, PDF and reset work end-to-
   await budget(page);
   const broad = page.getByRole("slider", { name: "Ngân sách Broad" });
   await broad.fill("8000000");
-  await expect(broad).toHaveValue("3000000");
+  await expect(broad).toHaveValue("8000000");
   await page.reload();
   await expect(
     page.getByLabel("Lập luận của bạn", { exact: true }),
@@ -313,4 +313,27 @@ test("trainer private-link UI downloads a class Excel file without login", async
     path: "/tmp/glow-nature-trainer-excel.png",
     fullPage: true,
   });
+});
+
+test("step buttons navigate freely and dragging reallocates a fully allocated budget", async ({ page }) => {
+  await page.goto("/");
+  await begin(page);
+  const progress = page.locator(".progress");
+  await progress.getByRole("button", { name: "Bài 3 · Theo dõi" }).click();
+  await expect(page.getByLabel("Điều kiện và hành động điều chỉnh")).toBeVisible();
+  await progress.getByRole("button", { name: "Bài 1 · Ngân sách" }).click();
+  const slider = page.getByRole("slider", { name: "Ngân sách Broad" });
+  const box = (await slider.boundingBox())!;
+  await page.mouse.move(box.x + box.width * 0.375, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width * 0.65, box.y + box.height / 2, { steps: 8 });
+  await page.mouse.up();
+  expect(Number(await slider.inputValue())).toBeGreaterThan(3000000);
+  const values = await page.locator('input[type="range"]').evaluateAll((inputs) => inputs.map((input) => Number((input as HTMLInputElement).value)));
+  expect(values.reduce((a, b) => a + b, 0)).toBe(8000000);
+  await progress.getByRole("button", { name: "Case & dataset" }).click();
+  await progress.getByRole("button", { name: "Bài 1 · Ngân sách" }).click();
+  expect(Number(await slider.inputValue())).toBe(values[0]);
+  await progress.getByRole("button", { name: "Kết quả & nộp bài" }).click();
+  await expect(page.locator(".error[role=alert]")).toBeVisible();
 });
