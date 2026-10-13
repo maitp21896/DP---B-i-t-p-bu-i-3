@@ -54,8 +54,18 @@ export async function readBoundedJson(
 }
 export function checkOrigin(request: Request) {
   const origin = request.headers.get("origin");
-  if (!origin || origin !== new URL(request.url).origin)
-    throw new HttpError(403, "Chỉ nhận bài nộp từ website này.");
+  // Next may build Request.url using an internal hostname behind a proxy.
+  // Browser-supplied Host is forbidden; use the received request Host, not forwarded headers.
+  const host = request.headers.get("host") || new URL(request.url).host;
+  let allowed = false;
+  try {
+    const parsed = new URL(origin || "");
+    allowed =
+      parsed.origin === origin &&
+      parsed.host === host &&
+      ["https:", "http:"].includes(parsed.protocol);
+  } catch {}
+  if (!allowed) throw new HttpError(403, "Chỉ nhận bài nộp từ website này.");
   if (request.headers.get("sec-fetch-site") === "cross-site")
     throw new HttpError(403, "Yêu cầu không hợp lệ.");
 }

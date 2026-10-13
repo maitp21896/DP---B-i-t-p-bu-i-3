@@ -130,3 +130,28 @@ test("CSV keeps Vietnamese and protects formula injection", () => {
   assert.ok(csv.includes("Nguyễn Minh Anh"));
   assert.ok(csv.includes('"2"'));
 });
+
+test("origin guard accepts the actual request Host behind Next proxy", () => {
+  assert.doesNotThrow(() =>
+    checkOrigin(
+      new Request("http://internal:3000/api/submissions", {
+        headers: {
+          host: "school.example.com",
+          origin: "https://school.example.com",
+        },
+      }),
+    ),
+  );
+  assert.throws(
+    () =>
+      checkOrigin(
+        new Request("http://internal:3000/api/submissions", {
+          headers: {
+            host: "school.example.com",
+            origin: "https://evil.example.com",
+          },
+        }),
+      ),
+    HttpError,
+  );
+});

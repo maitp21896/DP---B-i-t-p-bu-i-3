@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 import { PDFDocument } from "pdf-lib";
-import { readFile } from "node:fs/promises";
 const rationale =
   "Tôi giữ ngân sách người mới để mở rộng nguồn truy cập. Broad có LPV Rate thấp nên tôi kiểm tra tốc độ trang và tracking trước khi kết luận nguyên nhân. Retargeting có Frequency cao và CPA tăng, vì vậy cần creative mới và kiểm chứng xu hướng. Tôi ưu tiên Traffic và theo dõi Cost/LPV cùng ATC Rate.";
 async function begin(page: import("@playwright/test").Page) {
@@ -205,70 +204,25 @@ test("assignment review preserves progress; identity required; server confirmati
   await page.reload();
   await expect(page.getByText("Đã nộp đề xuất cho giảng viên")).toBeVisible();
   expect(calls).toBe(2);
-  const response = await request.post("/api/trainer/submissions", {
-    headers: { origin: "http://127.0.0.1:3000" },
-    data: {},
-  });
-  expect(response.status()).toBe(401);
+  const response = await request.post("/api/trainer/submissions", { data: {} });
+  expect(response.status()).toBe(404);
 });
-test("trainer route shows honest configuration state without exposing data", async ({
+test("trainer shortcut opens Supabase results without an app login", async ({
   page,
 }) => {
   await page.goto("/trainer");
   await expect(
-    page.getByRole("heading", { name: /Đọc quyết định/ }),
+    page.getByRole("heading", { name: "Mở bảng kết quả học viên" }),
   ).toBeVisible();
   await expect(
-    page.getByText("Chưa kết nối Supabase.", { exact: false }),
-  ).toBeVisible();
-  await page.screenshot({
-    path: "/tmp/glow-nature-trainer-login.png",
-    fullPage: true,
-  });
-});
-test("trainer component fixture filters, compares original reasoning and exports", async ({
-  page,
-}) => {
-  for (const name of [
-    "glow-nature-trainer-fixture.html",
-    "glow-nature-trainer-fixture.js",
-    "glow-nature-fixture.css",
-  ]) {
-    const body = await readFile("/tmp/" + name);
-    await page.route("**/" + name, (route) =>
-      route.fulfill({
-        body,
-        contentType: name.endsWith("html")
-          ? "text/html"
-          : name.endsWith("css")
-            ? "text/css"
-            : "text/javascript",
-      }),
-    );
-  }
-  await page.goto("/glow-nature-trainer-fixture.html");
-  await expect(page.getByText("Học Viên Mẫu", { exact: true })).toBeVisible();
-  await page.screenshot({
-    path: "/tmp/glow-nature-trainer-dashboard.png",
-    fullPage: true,
-  });
-  await page.getByLabel("Mã lớp", { exact: true }).fill("NOCLASS");
-  await page.getByRole("button", { name: "Lọc bài nộp" }).click();
-  await expect(page.getByText("Chưa có bài nộp phù hợp")).toBeVisible();
-  await page.getByLabel("Mã lớp", { exact: true }).fill("TEST01");
-  await page.getByRole("button", { name: "Lọc bài nộp" }).click();
-  const download = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Xuất CSV theo bộ lọc" }).click();
-  expect((await download).suggestedFilename()).toBe("Glow-Nature-TEST01.csv");
-  await page.getByRole("button", { name: "Xem đề xuất", exact: true }).click();
-  await expect(
-    page.getByRole("heading", { name: "Ban đầu & điều chỉnh" }),
-  ).toBeVisible();
-  await expect(page.locator(".proposal")).toContainText(
-    "Sau phản hồi, tôi tăng Lookalike từng bước",
+    page.getByRole("link", { name: "Mở bảng kết quả trên Supabase ↗" }),
+  ).toHaveAttribute(
+    "href",
+    "https://supabase.com/dashboard/project/bfcgltjyrtpjgqvbexxz/editor",
   );
+  await expect(page.getByRole("textbox")).toHaveCount(0);
   await page.screenshot({
-    path: "/tmp/glow-nature-trainer-detail.png",
+    path: "/tmp/glow-nature-trainer-simple.png",
     fullPage: true,
   });
 });

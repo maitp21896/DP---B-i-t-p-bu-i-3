@@ -9,6 +9,7 @@ import {
 } from "@/lib/submissions/http";
 import { submissionSchema } from "@/lib/submissions/schema";
 import { evaluate } from "@/lib/simulation";
+import { summary } from "@/lib/report-summary";
 import { dataset } from "@/lib/metrics";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
@@ -46,7 +47,10 @@ export async function POST(request: Request) {
       p_student_name: d.identity.studentName,
       p_class_code: d.identity.classCode,
       p_versions: d.versions,
-      p_feedback: d.versions.map(evaluate),
+      p_feedback: d.versions.map((version) => ({
+        ...evaluate(version),
+        report: summary(version, d.identity, d.id),
+      })),
       p_final_score: evaluate(d.versions.at(-1)!).indicative,
       p_data_version: dataset.sha256,
       p_rate_key: hash(ip + process.env.SUPABASE_SERVICE_ROLE_KEY),

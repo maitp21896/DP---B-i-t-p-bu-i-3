@@ -1,8 +1,5 @@
 -- Run once in Supabase SQL Editor. No credentials belong in this file.
 begin;
-create table if not exists public.trainers (
- user_id uuid primary key references auth.users(id) on delete cascade
-);
 create table if not exists public.submissions (
  id uuid primary key,
  student_name text not null check (char_length(student_name) between 3 and 100),
@@ -28,20 +25,15 @@ create table if not exists public.submission_rate_limits (
  attempts integer not null,
  primary key(key,window_start)
 );
-alter table public.trainers enable row level security;
 alter table public.submissions enable row level security;
 alter table public.submission_receipts enable row level security;
 alter table public.submission_rate_limits enable row level security;
-revoke all on public.trainers,public.submissions,public.submission_receipts,public.submission_rate_limits from anon,authenticated;
-grant select on public.trainers,public.submissions to authenticated;
-grant all on public.trainers,public.submissions,public.submission_receipts,public.submission_rate_limits to service_role;
-drop policy if exists trainer_self on public.trainers;
-create policy trainer_self on public.trainers for select to authenticated using(user_id=(select auth.uid()));
+revoke all on public.submissions,public.submission_receipts,public.submission_rate_limits from anon,authenticated;
+grant all on public.submissions,public.submission_receipts,public.submission_rate_limits to service_role;
+-- Remove the previous custom trainer policy; existing tables/records are preserved.
 drop policy if exists trainer_read_submissions on public.submissions;
-create policy trainer_read_submissions on public.submissions for select to authenticated using (
- submitted_at > now()-interval '90 days' and exists(select 1 from public.trainers where user_id=(select auth.uid()))
-);
--- No anonymous reads/inserts, no client update/delete, and no trainer self-enrollment.
+-- No app login is needed. Project owners view results in Supabase's own dashboard.
+-- Public API users cannot read, insert, update or delete submissions directly.
 create or replace function public.submit_campaign(
  p_id uuid,p_token_hash text,p_payload_hash text,p_student_name text,p_class_code text,
  p_versions jsonb,p_feedback jsonb,p_final_score integer,p_data_version text,p_rate_key text
@@ -80,4 +72,20 @@ language sql security invoker set search_path=public,pg_temp as $$
 $$;
 revoke all on function public.cleanup_campaign_submissions() from public,anon,authenticated;
 grant execute on function public.cleanup_campaign_submissions() to service_role;
+-- A readable results view for the Supabase Table Editor (owner access only).
+create or replace view public.trainer_results with (security_invoker=true) as
+select id as ma_bai_nop, student_name as ho_va_ten, class_code as ma_lop,
+ submitted_at as thoi_gian_nop, status as trang_thai,
+ (final_proposal->'budgets'->>'broad')::bigint as ngan_sach_broad,
+ (final_proposal->'budgets'->>'lal')::bigint as ngan_sach_lookalike,
+ (final_proposal->'budgets'->>'rt')::bigint as ngan_sach_retargeting,
+ final_proposal->>'rationale' as lap_luan_nguyen_van,
+ final_proposal->>'rule' as dieu_kien_dieu_chinh,
+ final_score as diem_tham_khao_tren_70,
+ final_version+1 as phien_ban_cuoi,
+ feedback->final_version->>'report' as bao_cao_day_du,
+ versions as lich_su_de_xuat, feedback as phan_hoi_mo_phong
+from public.submissions;
+revoke all on public.trainer_results from public,anon,authenticated;
+grant select on public.trainer_results to service_role;
 commit;

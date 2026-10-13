@@ -1,97 +1,83 @@
-# Supabase & Vercel setup — beginner guide
+# Thiết lập đơn giản: nộp bài → lưu Supabase → xem kết quả
 
-The new backend is implemented, but **your Supabase project has not been connected or verified yet**. Keep the current deployed version until the following setup is complete. Do not share keys, passwords, or database connection strings in chat.
+Không cần tạo tài khoản học viên, tài khoản trainer hoặc cấp quyền trainer trong app. Trainer dùng tài khoản quản lý dự án Supabase đã có để xem bảng kết quả.
 
-## 1. Create your project
+## Bước 1 — Tạo nơi lưu kết quả
 
-Visit https://supabase.com, sign in, create a project named `glow-nature-simulator`, choose a region near Vietnam, and keep its database password in your password manager. Wait for the project to finish provisioning.
+Mở dự án `bfcgltjyrtpjgqvbexxz` trên Supabase → **SQL Editor → New query**. Copy toàn bộ [schema.sql](../supabase/schema.sql), paste và bấm **Run**.
 
-## 2. Create the tables and security policies
+Nếu đã chạy bản SQL cũ, vẫn chạy bản mới này. Dữ liệu bài nộp được giữ nguyên; app không còn dùng bảng trainer hay yêu cầu đăng nhập riêng.
 
-In your project, open **SQL Editor → New query**. Paste the complete contents of [supabase/schema.sql](../supabase/schema.sql) and click **Run**. The script creates submission tables, database authorization, atomic rate limiting and safe retry handling. It does not create any student account or grant trainer access automatically.
+## Bước 2 — Thêm đúng 2 biến vào Vercel
 
-Do not disable Row Level Security. If you get an error, send the error text with any credentials removed.
+Vercel → dự án hiện tại → **Settings → Environment Variables**:
 
-## 3. Create and authorize a trainer
+| Name                        | Value                                                                         |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| `SUPABASE_URL`              | `https://bfcgltjyrtpjgqvbexxz.supabase.co`                                    |
+| `SUPABASE_SERVICE_ROLE_KEY` | Key `service_role` trong Supabase **Settings → API / API Keys → Legacy keys** |
 
-1. Open **Authentication → Users → Add user → Create new user**.
-2. Enter the trainer's email and choose a strong password; confirm the email through the dashboard option. Do not enable public student signup. In Authentication settings, disable **Allow new users to sign up** if your project provides that toggle. Trainers are provisioned by you, not through this app.
-3. In SQL Editor, run this query after replacing the example email with the email you used:
+Chọn Production và Preview nếu cần kiểm thử trước khi cập nhật main. Không gửi key qua chat. Key thứ hai chỉ được dùng trên server, không thêm `NEXT_PUBLIC_` vào tên key.
 
-```sql
-insert into public.trainers (user_id)
-select id from auth.users where lower(email) = lower('your-trainer-email@example.com')
-on conflict do nothing;
+Nếu đã thêm `NEXT_PUBLIC_SUPABASE_URL` theo hướng dẫn cũ, URL đó vẫn dùng được; không bắt buộc đổi tên. `NEXT_PUBLIC_SUPABASE_ANON_KEY` không còn cần thiết.
 
--- Verify that one authorized user exists (no passwords or tokens are returned).
-select count(*) as authorized_trainers from public.trainers;
-```
+## Bước 3 — Cập nhật website
 
-An Auth account without a row in `public.trainers` cannot read submissions. Name/class code are identification only and never grant authorization.
+Merge nhánh `feature/trainer-submissions` vào `main` sau khi cấu hình xong. Vercel sẽ build phiên bản mới; nếu thêm biến sau khi build, chọn **Redeploy**.
 
-## 4. Add three variables securely in Vercel
+Học viên vẫn đi qua bài tập hiện tại, nhập họ tên/mã lớp, xem mô phỏng và bấm **Nộp đề xuất cuối cùng**. Chỉ khi server xác nhận thì app mới hiện **Đã nộp**. Không tạo tài khoản học viên.
 
-Find your Supabase **Project URL**, **anon/public key**, and **service_role key** under **Project Settings → API / API Keys**. Newer dashboards may show a **Legacy anon, service_role API keys** tab; these are the keys used by this app. Copy values straight from Supabase to Vercel, not to chat.
+## Bước 4 — Trainer xem kết quả
 
-Open your existing Vercel project → **Settings → Environment Variables**. Add:
+Mở https://supabase.com/dashboard/project/bfcgltjyrtpjgqvbexxz/editor bằng tài khoản Supabase quản lý dự án.
 
-| Name                            | Value from Supabase                                  | Where used                                                    |
-| ------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Project URL, e.g. `https://your-project.supabase.co` | Browser and server                                            |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `anon` public key                                    | Trainer sign-in; RLS still restricts data                     |
-| `SUPABASE_SERVICE_ROLE_KEY`     | `service_role` key                                   | Server only: writes through the validated submission endpoint |
-
-Choose **Production** and **Preview** if you want to test the feature branch before merging. The service-role key must **never** have a `NEXT_PUBLIC_` prefix. It is never sent to the browser. Mark it sensitive where Vercel offers that option.
-
-For local validation in this cloud workspace, add the same variables securely through environment settings. Do not paste secret values into the conversation. API access to your project's exact `your-project.supabase.co` hostname must also be allowed. Providing the non-secret Project URL in chat is sufficient to identify the required hostname; no keys are needed in chat.
-
-## 5. Deploy the updated code
-
-The changes are prepared on `feature/trainer-submissions`. Once code is pushed, use its Vercel Preview deployment to test before merging the feature Pull Request into `main`. If variables were added after a build, go to **Deployments → Redeploy** so public variables are included in the rebuilt browser app.
-
-## 6. Verify real storage end-to-end
-
-1. Open the app in one browser. Read the assignment, enter a test full name and class `TEST01`, and complete the exercise.
-2. Run simulation. **No row should be saved yet.** Optionally revise once.
-3. Check the final report and click **Nộp đề xuất cuối cùng**. Wait for the server-confirmed reference.
-4. Open `/trainer` in another browser/device. Log in with the trainer account. Filter by `TEST01`; confirm the submission, timestamp, complete original rationale, feedback and revision history appear.
-5. Open the detail and print the individual report; export the class CSV.
-6. Refresh the learner page: the confirmed reference should remain. Retrying a request after an interrupted response must not create a second row.
-7. Test a non-trainer Auth account and an unsigned request: both must be denied access to submissions. The anon key alone must not allow direct reads, inserts, or calls to `submit_campaign`.
-
-The acceptance criterion “a confirmed submission appears on another device” cannot be marked passed until these checks succeed against your actual project. Local tests and mocked browser responses do not prove live Supabase connectivity.
-
-## 7. Retention and deletion
-
-Only name, class and educational work are stored. No student email, phone, password or raw IP address is collected. Reports can contain names, so share them only with authorized people. Server-side IP hashes are retained for up to one day for rate limiting. Submissions and retry receipts are retained for **90 days**, and expired submissions are hidden by RLS immediately.
-
-In Supabase enable the **pg_cron** extension (Database → Extensions), then schedule cleanup in SQL Editor:
+Trong **Table Editor**, chọn view **trainer_results**. Nếu chưa thấy view, tìm trong danh sách quan hệ; cũng có thể dùng SQL Editor:
 
 ```sql
-select cron.schedule(
-  'glow-nature-daily-retention',
-  '0 20 * * *',
-  'select public.cleanup_campaign_submissions();'
-);
+select * from public.trainer_results order by thoi_gian_nop desc;
 ```
 
-This runs daily at 20:00 UTC (03:00 Vietnam time the next day). Schedule this only once. Inspect jobs with `select jobid, jobname, schedule from cron.job;`. If pg_cron is unavailable, run `select public.cleanup_campaign_submissions();` manually **daily** until scheduling is available. Monitor successful executions in `cron.job_run_details`.
+Các cột dễ đọc:
 
-To delete a particular student's submission after a verified request, use the private reference supplied by that student:
+- `ho_va_ten`, `ma_lop`, `thoi_gian_nop`: ai nộp, lớp nào, khi nào.
+- `ngan_sach_broad`, `ngan_sach_lookalike`, `ngan_sach_retargeting`: ngân sách.
+- `lap_luan_nguyen_van`, `dieu_kien_dieu_chinh`: câu trả lời gốc.
+- `bao_cao_day_du`: bản tóm tắt đầy đủ gồm phát hiện, hành động, KPI và rủi ro.
+- `lich_su_de_xuat`, `phan_hoi_mo_phong`: bản đầu, bản sửa và phản hồi.
+
+Để xem một lớp:
 
 ```sql
--- Replace the example UUID with the verified reference. This is permanent.
-delete from public.submissions where id = '00000000-0000-0000-0000-000000000000';
+select * from public.trainer_results
+where ma_lop = 'DP27'
+order by thoi_gian_nop desc;
 ```
 
-Retry receipts are deleted automatically. Local drafts also expire after 90 days or on reset. Resetting the exercise only clears the browser draft; it does not delete a finalized server record. Also clear downloaded exports when their retention period ends. Supabase infrastructure backups follow the retention terms of your chosen plan; review those if you have additional privacy requirements.
+Có thể tải kết quả CSV từ bảng kết quả query trong SQL Editor. Trong app, `/trainer` chỉ là lối tắt sang Supabase, không có form đăng nhập hay danh sách bài nộp công khai.
 
-To remove a trainer's access, delete their membership in `public.trainers` through your Supabase dashboard. API access and direct database reads will then be denied even if the Auth session still exists.
+## Kiểm thử một lần
 
-## Troubleshooting
+Nộp một bài với mã lớp `TEST01`, đợi xác nhận, rồi mở `trainer_results` trong Supabase để kiểm tra họ tên, lập luận và báo cáo. Nếu có sửa một lần, lịch sử phải có hai bản. Refresh hoặc thử gửi lại không được tạo bài trùng.
 
-- **Chưa cấu hình Supabase:** add all three variables and rebuild the deployment.
-- **Chưa thể lưu bài lên database:** run the SQL schema, verify the server key and project URL, and inspect Supabase logs privately.
-- **Tài khoản chưa được cấp quyền giảng viên:** authorize the Auth user's ID in `public.trainers`.
-- **Too many requests:** wait two minutes before retrying. Rate limits allow a classroom of 20–40 learners behind one shared IP; they are basic abuse protection, not a complete bot defense. Apply Vercel Firewall/WAF rules if the public endpoint is abused.
-- **Not reflected in trainer list:** ensure the learner received a server confirmation and the trainer uses the same Supabase project. Simulation/draft saving does not submit.
+Đã kiểm thử POST nộp bài trên bản production local nối tới dự án Supabase thật: server trả 201, câu trả lời/báo cáo được lưu đúng, retry không tạo trùng và bài mẫu đã được xóa. View `trainer_results` chưa có trong dự án thật; chạy SQL mới để tạo view. Việc cập nhật website Vercel chưa được xác minh.
+
+Trong lúc chưa tạo view, bạn đã có thể mở bảng `submissions`: `final_proposal` chứa câu trả lời cuối và `feedback` chứa báo cáo đầy đủ.
+
+## Lưu giữ và xóa
+
+Mặc định giữ bài tối đa 90 ngày; không lưu email, mật khẩu học viên hoặc IP thô. Bản nháp trên trình duyệt cũng hết hạn sau 90 ngày hoặc khi reset. Reset không xóa bài trên Supabase.
+
+Supabase **Database → Extensions** → bật `pg_cron`, rồi chạy một lần:
+
+```sql
+select cron.schedule('glow-nature-daily-retention','0 20 * * *',
+ 'select public.cleanup_campaign_submissions();');
+```
+
+Nếu chưa bật cron, chạy thủ công hằng ngày:
+
+```sql
+select public.cleanup_campaign_submissions();
+```
+
+Để xóa bài theo yêu cầu học viên, tìm đúng mã bài rồi xóa dòng trong bảng `submissions`; receipt đi kèm tự xóa. Không tắt RLS hoặc cho public đọc bảng: chỉ tài khoản quản lý Supabase cần xem dữ liệu này.
