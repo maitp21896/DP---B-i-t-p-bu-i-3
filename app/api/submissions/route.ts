@@ -1,3 +1,5 @@
+import { after } from "next/server";
+import { notifyGoogleSheets } from "@/lib/google-sheets";
 import { createHash } from "node:crypto";
 import { isIP } from "node:net";
 import { adminClient } from "@/lib/supabase/server";
@@ -77,6 +79,9 @@ export async function POST(request: Request) {
         503,
         "Máy chủ chưa xác nhận lưu bài. Vui lòng thử lại.",
       );
+    after(async () => {
+      await notifyGoogleSheets();
+    });
     return Response.json(
       { id: data.id, submittedAt: data.submitted_at, status: "submitted" },
       { status: 201, headers: { "Cache-Control": "no-store" } },

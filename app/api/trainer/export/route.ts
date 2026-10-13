@@ -6,6 +6,7 @@ import {
   checkOrigin,
 } from "@/lib/submissions/http";
 import { classWorkbook } from "@/lib/excel";
+import { sheetsHeaders, sheetsRow } from "@/lib/sheets-row";
 import { StoredSubmission } from "@/types/campaign";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,9 +15,12 @@ export async function POST(request: Request) {
     checkOrigin(request);
     const body = (await readBoundedJson(request, 1024)) as {
       classCode?: unknown;
+      format?: unknown;
     };
     if (!body || typeof body !== "object")
       throw new HttpError(400, "Yêu cầu tải không hợp lệ.");
+    if (body.format !== undefined && body.format !== "json")
+      throw new HttpError(400, "Định dạng tải không hợp lệ.");
     const cls =
       typeof body.classCode === "string"
         ? body.classCode.trim().toUpperCase()
@@ -54,6 +58,14 @@ export async function POST(request: Request) {
         413,
         "Có hơn 1.000 bài. Liên hệ hỗ trợ để xuất dữ liệu theo nhóm.",
       );
+    if (body.format === "json") {
+      const exported = { headers: sheetsHeaders, rows: rows.map(sheetsRow) };
+      if (Buffer.byteLength(JSON.stringify(exported), "utf8") > 4000000)
+        throw new HttpError(413, "Dữ liệu quá lớn để đồng bộ trong một lần.");
+      return Response.json(exported, {
+        headers: { "Cache-Control": "no-store" },
+      });
+    }
     if (!rows.length)
       throw new HttpError(404, "Chưa có bài nộp trong thời hạn lưu 90 ngày.");
     const bytes = await classWorkbook(rows);

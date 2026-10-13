@@ -1,5 +1,7 @@
 # Trainer: public Excel download
 
+For automatic updates in the supplied Google Sheet, follow [Google Sheets setup](GOOGLE_SHEETS_SETUP.md).
+
 Open `https://dp-b-i-t-p-bu-i-3.vercel.app/trainer` and click **Tải Excel tổng hợp**. No account, token, or class code is needed. The page also includes a suggested answer for trainers.
 
 Public access is intentional: anyone visiting this page can download student names, class codes, original answers, and submission timestamps. This setting was explicitly requested by the project owner. Supabase service-role credentials stay on the server; database tables do not become directly public.
