@@ -1,17 +1,29 @@
-export default function TrainerAnswerKey() {
+export default function TrainerAnswerKey({
+  forStudents = false,
+}: {
+  forStudents?: boolean;
+}) {
   return (
     <div className="trainer-answer-key">
       <section className="card">
         <span className="eyebrow">TOMORROW MARKETERS · CASE GLOW NATURE</span>
-        <h2>Đáp án gợi ý &amp; hướng dẫn nhận xét</h2>
+        <h2>
+          {forStudents
+            ? "Cách tham khảo đáp án"
+            : "Đáp án gợi ý & hướng dẫn nhận xét"}
+        </h2>
         <p>
-          {
-            "Điểm quan trọng: Bài tập này không có một tỷ lệ phân bổ ngân sách duy nhất được xem là đúng. Trainer cần đánh giá học viên ở khả năng đọc dữ liệu → xác định vấn đề → đưa ra quyết định → giải thích và kiểm soát rủi ro."
-          }
+          {forStudents
+            ? "Bài tập này không có một tỷ lệ phân bổ ngân sách duy nhất đúng. Hãy đối chiếu cách đọc dữ liệu, quyết định, giải thích và kiểm soát rủi ro của bạn với các phương án dưới đây."
+            : "Điểm quan trọng: Bài tập này không có một tỷ lệ phân bổ ngân sách duy nhất được xem là đúng. Trainer cần đánh giá học viên ở khả năng đọc dữ liệu → xác định vấn đề → đưa ra quyết định → giải thích và kiểm soát rủi ro."}
         </p>
       </section>
       <section className="card">
-        <h2>{"1. Phân tích dữ liệu – Những kết luận học viên nên nhận ra"}</h2>
+        <h2>
+          {forStudents
+            ? "1. Phân tích dữ liệu"
+            : "1. Phân tích dữ liệu – Những kết luận học viên nên nhận ra"}
+        </h2>
         <p>{"Dựa trên bộ dữ liệu Glow Nature đã xây dựng:"}</p>
         <div className="table-scroll">
           <table>
@@ -358,9 +370,9 @@ export default function TrainerAnswerKey() {
           }
         </p>
         <p>
-          {
-            "Lưu ý cho trainer: Nếu học viên đề xuất tăng Retargeting chỉ vì CPA thấp nhất mà không thảo luận rủi ro bão hòa, đó là lập luận chưa đạt."
-          }
+          {forStudents
+            ? "Lưu ý: CPA thấp nhất chưa đủ để quyết định tăng ngân sách Retargeting. Cần giải thích thêm về quy mô tệp và rủi ro bão hòa."
+            : "Lưu ý cho trainer: Nếu học viên đề xuất tăng Retargeting chỉ vì CPA thấp nhất mà không thảo luận rủi ro bão hòa, đó là lập luận chưa đạt."}
         </p>
       </section>
       <section className="card">
